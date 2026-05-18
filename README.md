@@ -7,7 +7,7 @@ Observable Notebooks are .html files. They can be read conveniently On MacOS com
 
 The notebook contains an object `typhoon` with paragraphs `.p<0-534>` and each paragraph will, after John's analyis, be given a `.bp` rating of 1-5 (for `bp` = **barometric pressure**) and also a `.tr` for **time to read**, and possibly other usable bits of metadata.
 
-John is going through all of the text to give these ratings and will also highlight in bold, keys texts to which ourselves and the model should give particular attention.
+John is going through all of the text to give these ratings and will also highlight **key texts** in bold: texts to which ourselves and the model should give particular attention.
 
 John also intends to write a critical commentary on the text to elucidate details of the transformer models ~= typhoon allegory.
 
