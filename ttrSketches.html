@@ -6,7 +6,7 @@
   </script>
   <script id="608" type="text/x-typescript" pinned="">
     import { RiTa } from "npm:rita";
-    const { syllables, isPunct } = RiTa;
+    const { syllables, isPunct, tokenize } = RiTa;
   </script>
   <script id="609" type="application/vnd.observable.javascript" pinned="">
     isPunct("")
@@ -16,8 +16,10 @@
     const VOWEL_WEIGHT = 1.5;
 
     function normalize(token: string): string {
+      token = token.trim();
+      // Remove any hyphen that is NOT the last character of the token
+      token = token.replace(/-(?!$)/g, "");
       return token
-        .trim()
         .replace(/_/g,"")
         .replace(/\*\*/g, "")
         // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
@@ -32,7 +34,7 @@
       ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
       const syls = syllables(token).split("/");
       const vowels = token.match(/[aeiouy]/gi);
-      const punc = Rita2.tokenize(token).filter(t => isPunct(t));
+      const punc = tokenize(token).filter(t => isPunct(t));
       ttr += syls.length * (base * 2);
       if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
       if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
