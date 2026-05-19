@@ -6,22 +6,37 @@
   </script>
   <script id="608" type="text/x-typescript" pinned="">
     import { RiTa } from "npm:rita";
-    const { syllables } = RiTa;
+    const { syllables, isPunct } = RiTa;
+  </script>
+  <script id="609" type="application/vnd.observable.javascript" pinned="">
+    isPunct("")
   </script>
   <script id="589" type="text/x-typescript" pinned="">
-    function timeToRead(word: string, lengthOfWhiteSpace: number = 1, factor: number = 1): {ttr: number} {
+    const PUNCT_PAUSE_MS = 700;
+    const VOWEL_WEIGHT = 1.5;
+
+    function normalize(token: string): string {
+      return token
+        .trim()
+        .replace(/_/g,"")
+        .replace(/\*\*/g, "")
+        // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
+        .replace(/[\u201C\u201D\u2018\u2019]/g, "");
+    }
+
+    function timeToRead(rawToken: string, lengthOfWhiteSpace: number = 1, factor: number = 1): number {
+      const token = normalize(rawToken);
       const base = 33;
       let ttr = base;
-      ttr += (word.length > 1 ? base : 0);
-      ttr += (word.length > 2 ? base : 0);
-      ttr += (word.length > 3 ? base : 0);
-      const syls = syllables(word).split("/");
-      const vowels = word.match(/[aeiouy]/gi);
-      const punc = word.match(/[,:;\.\?]/gi);
+      // add up to 3 extra base units for each unit of token length up to length 4
+      ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
+      const syls = syllables(token).split("/");
+      const vowels = token.match(/[aeiouy]/gi);
+      const punc = Rita2.tokenize(token).filter(t => isPunct(t));
       ttr += syls.length * (base * 2);
-      if (vowels) ttr += (word.length > 4 ? vowels.length * (base * 1.5) : base * 1.5);
-      if (punc) ttr += punc.length * 700;
-      ttr += lengthOfWhiteSpace * (base * 2)
+      if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
+      if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
+      ttr += lengthOfWhiteSpace * (base * 2);
       ttr = Math.round(ttr / factor);
       return ttr;
     }
@@ -939,5 +954,74 @@
           "word": "too. "
         }
       ]
+  </script>
+  <script id="613" type="text/x-typescript" pinned="">
+    import * as RiTaModule from "npm:rita";
+    const Rita2 = RiTaModule.RiTa;
+    display(Object.keys(Rita2).sort());
+  </script>
+  <script id="614" type="text/x-typescript" pinned="">
+    // Inspect punctuation-related constants
+    const punctConstants = {
+      SENTENCE_BOUNDARY: Rita2.SENTENCE_BOUNDARY,
+      WORD_BOUNDARY: Rita2.WORD_BOUNDARY,
+      PHONE_BOUNDARY: Rita2.PHONE_BOUNDARY,
+      SYLLABLE_BOUNDARY: Rita2.SYLLABLE_BOUNDARY,
+      VOWELS: Rita2.VOWELS,
+    };
+    display(punctConstants);
+  </script>
+  <script id="615" type="text/x-typescript" pinned="">
+    // Inspect tokenizer methods
+    display("Tokenizer methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(Rita2.tokenizer)));
+
+    // Test isPunct and related methods
+    const testWords = ["hello", ",", ".", "!", "?", ";", ":", "...", "world", "'s", "--", "\""];
+    const punctResults = testWords.map(w => ({
+      word: w,
+      isPunct: Rita2.isPunct(w),
+    }));
+    display(Inputs.table(punctResults));
+
+    // Tokenize a sentence to see how punctuation is handled
+    const sentence = "Hello, world! How are you? It's fine; really.";
+    display("tokenize:", Rita2.tokenize(sentence));
+    display("tokenize (as string):", Rita2.tokenize(sentence).join(" | "));
+  </script>
+  <script id="616" type="text/x-typescript" pinned="">
+    // Check tokenizer methods more carefully
+    const tokProto = Object.getOwnPropertyNames(Object.getPrototypeOf(Rita2.tokenizer));
+    display("Tokenizer prototype methods:", tokProto);
+
+    // Also check top-level RiTa methods related to punctuation/tokenization
+    const allMethods = Object.getOwnPropertyNames(Rita2).filter(k => typeof Rita2[k] === 'function');
+    display("All RiTa static methods:", allMethods.sort());
+  </script>
+  <script id="617" type="text/x-typescript" pinned="">
+    // Test all the punctuation/character-classification methods
+    const charTests = [",", ".", "!", "?", ";", ":", "a", "e", "b", "y", "'s", "--", "\"", " "];
+    const charTable = charTests.map(c => ({
+      char: JSON.stringify(c),
+      isPunct:    Rita2.isPunct(c),
+      isVowel:    Rita2.isVowel(c),
+      isConsonant: Rita2.isConsonant(c),
+      isStopWord: Rita2.isStopWord(c),
+      isAbbrev:   Rita2.isAbbrev(c),
+    }));
+    display(Inputs.table(charTable));
+
+    // Also test isQuestion and sentences
+    display("isQuestion('How are you?'):", Rita2.isQuestion("How are you?"));
+    display("isQuestion('Hello world.'):", Rita2.isQuestion("Hello world."));
+    display("sentences('Hello world. How are you? Fine.'):", Rita2.sentences("Hello world. How are you? Fine."));
+  </script>
+  <script id="618" type="text/x-typescript" pinned="">
+    const curlyQuotes2 = ["\u201C", "\u201D", "\u2018", "\u2019"];
+    display(curlyQuotes2.map(q => ({ char: q, codePoint: q.codePointAt(0)?.toString(16), removed: normalize(q) === "" })));
+  </script>
+  <script id="619" type="text/x-typescript" pinned="">
+    const regexSource = /[""'']/g.source;
+    display(regexSource);
+    display([...regexSource].map(c => ({ char: c, codePoint: c.codePointAt(0)?.toString(16) })));
   </script>
 </notebook>

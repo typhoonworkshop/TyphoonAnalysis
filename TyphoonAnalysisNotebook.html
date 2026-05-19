@@ -46,22 +46,34 @@
   </script>
   <script id="608" type="text/x-typescript" pinned="">
     import { RiTa } from "npm:rita";
-    const { syllables } = RiTa;
+    const { syllables, isPunct, tokenize } = RiTa;
   </script>
   <script id="589" type="text/x-typescript" pinned="">
-    function timeToRead(word: string, lengthOfWhiteSpace: number = 1, factor: number = 1): {ttr: number} {
+    const PUNCT_PAUSE_MS = 700;
+    const VOWEL_WEIGHT = 1.5;
+
+    function normalize(token: string): string {
+      return token
+        .trim()
+        .replace(/_/g,"")
+        .replace(/\*\*/g, "")
+        // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
+        .replace(/[\u201C\u201D\u2018\u2019]/g, "");
+    }
+
+    function timeToRead(rawToken: string, lengthOfWhiteSpace: number = 1, factor: number = 1): number {
+      const token = normalize(rawToken);
       const base = 33;
       let ttr = base;
-      ttr += (word.length > 1 ? base : 0);
-      ttr += (word.length > 2 ? base : 0);
-      ttr += (word.length > 3 ? base : 0);
-      const syls = syllables(word).split("/");
-      const vowels = word.match(/[aeiouy]/gi);
-      const punc = word.match(/[,:;\.\?]/gi);
+      // add up to 3 extra base units for each unit of token length up to length 4
+      ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
+      const syls = syllables(token).split("/");
+      const vowels = token.match(/[aeiouy]/gi);
+      const punc = tokenize(token).filter(t => isPunct(t));
       ttr += syls.length * (base * 2);
-      if (vowels) ttr += (word.length > 4 ? vowels.length * (base * 1.5) : base * 1.5);
-      if (punc) ttr += punc.length * 700;
-      ttr += lengthOfWhiteSpace * (base * 2)
+      if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
+      if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
+      ttr += lengthOfWhiteSpace * (base * 2);
       ttr = Math.round(ttr / factor);
       return ttr;
     }
@@ -72,9 +84,7 @@
       const words = text.trim().split(/\s+/);
       const wordTimes: number[] = [];
       for (let i = 0; i < words.length; i++) {
-        // strip markdown bold markers and punctuation for a cleaner word
-        const clean = words[i].replace(/\*\*/g, "");
-        wordTimes.push(timeToRead(clean));
+        wordTimes.push(timeToRead(words[i]));
       }
       const totalMs = wordTimes.reduce((sum, t) => sum + t, 0);
       return { totalMs, wordTimes };
