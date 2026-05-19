@@ -6,7 +6,7 @@
   </script>
   <script id="587" type="text/markdown">
     ### Note on the text
-    *I first read* Typhoon *in a North American edition belonging to my maternal great grandfather that was probably based on the North American serialization. The digital text that we use here is from Project Gutenberg and is based on the original English book editions. When going through the text for this analysis I have used the* Oxford World’s Classics *Kindle edition, chiefly to confirm paragraph breaks and also for chapter or section divisions.*
+    *I first read* Typhoon *in a North American edition belonging to my maternal great grandfather that was probably based on a North American serialization. The digital text that we use here is from Project Gutenberg and is based on the original English book editions. When going through the text for this analysis I have used the* Oxford World’s Classics *Kindle edition, chiefly to confirm paragraph breaks and also for chapter divisions.*
   </script>
   <script id="20" type="text/markdown">
     ---
@@ -41,7 +41,7 @@
       return boldTexts ? boldTexts : `No emphasized text in ${p}.`
     }
   </script>
-  <script id="588" type="text/x-typescript" pinned="">
+  <script id="588" type="application/vnd.observable.javascript" pinned="">
     extractBoldTexts("p0")
   </script>
   <script id="608" type="text/x-typescript" pinned="">
@@ -90,6 +90,37 @@
       return { totalMs, wordTimes };
     }
   </script>
+  <script id="612" type="application/vnd.observable.javascript" pinned="">
+    typhoon
+  </script>
+  <script id="615" type="text/x-typescript" pinned="">
+    // Iterate through all properties of the typhoon object
+    const typhoonEntries = [];
+
+    for (const [key, value] of Object.entries(typhoon)) {
+      const type = key.startsWith("c") ? "chapter" : "paragraph";
+      const wordCount = value.text.trim().split(/\s+/).length;
+      const hasBp = "bp" in value;
+
+      if (type === "paragraph") {
+        typhoon[key].ttr = paragraphReadTimes(typhoon[key].text).totalMs;
+      }
+      const hasTtr = "ttr" in value;
+
+      typhoonEntries.push({
+        key,
+        type,
+        wordCount,
+        hasBp,
+        bp: value.bp ?? null,
+        ttr: value.ttr ?? null,
+        preview: value.text.slice(0, 80).replace(/\*\*/g, "") + (value.text.length > 80 ? "…" : "")
+      });
+    }
+
+    display(md`**${typhoonEntries.length} entries** found in \`typhoon\`: **${typhoonEntries.filter(e => e.type === "chapter").length}** chapters, **${typhoonEntries.filter(e => e.type === "paragraph").length}** paragraphs`);
+    display(Inputs.table(typhoonEntries));
+  </script>
   <script id="5" type="text/html">
     <hr><b>Extra CSS is in this cell</b><hr>
     <style>
@@ -124,7 +155,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="578" type="text/x-typescript">
-    let p = 0;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp: ${typhoon['p'+p].bp}\n- *In the first sentence of the novella, Captain MacWhirr is introduced as epitomizing a human engagement with his world that has little to do with speculative intelligence. His usual activities are not even* responses *to the the world. On the face of it, he is “irresponsive.” Overtly, he appears — particularly to chief mate Jukes — to be* “stupid” *and this is reaffirmed in the final sentence of the book.*\n- *For our allegory — in which language models, as cultural weather, are considered a typhoon — this introduces an particular relation to speculative and, later in the text, to archival ‘intelligence.’*`)
+    let p = 0;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *In the first sentence of the novella, Captain MacWhirr is introduced as epitomizing a human engagement with his world that has little to do with speculative intelligence. His usual activities are not even* responses *to the the world. On the face of it, he is “irresponsive.” Overtly, he appears — particularly to chief mate Jukes — to be* “stupid” *and this is reaffirmed in the final sentence of the book.*\n- *For our allegory — in which language models, as cultural weather, are considered a typhoon — this introduces a singular relation to speculative and, later in the text, to archival ‘intelligence.’*`)
   </script>
   <script id="45" type="text/x-typescript">
     let p = 1;
@@ -132,12 +163,15 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="581" type="text/x-typescript">
-    let p = 1;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp: ${typhoon['p'+p].bp}\n- *Both the chief mate, Jukes, and the chief engineer, Rout, are here first-mentioned as foils to the sketch of MacWhirr’s character, and in a manner that is disproportinately efficacious in revealing their own characters.*`)
+    let p = 1;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp: ${typhoon['p'+p].bp}\n- *Both the chief mate, Jukes, and the chief engineer, Rout, are here first-mentioned as foils to the sketch of MacWhirr’s character, and in a manner that is disproportinately efficacious with respect to revealing their own.*`)
   </script>
   <script id="46" type="text/x-typescript">
     let p = 2;
-    typhoon['p'+p] = {text: `Having just enough imagination to carry him through each successive day, and no more, he was tranquilly sure of himself; and from the very same cause he was not in the least conceited. It is your imaginative superior who is touchy, overbearing, and difficult to please; but every ship Captain MacWhirr commanded was the floating abode of harmony and peace. It was, in truth, as impossible for him to take a flight of fancy as it would be for a watchmaker to put together a chronometer with nothing except a two-pound hammer and a whip-saw in the way of tools. Yet the uninteresting lives of men so entirely given to the actuality of the bare existence have their mysterious side. It was impossible in Captain MacWhirr’s case, for instance, to understand what under heaven could have induced that perfectly satisfactory son of a petty grocer in Belfast to run away to sea. And yet he had done that very thing at the age of fifteen. It was enough, when you thought it over, to give you the idea of an immense, potent, and invisible hand thrust into the ant-heap of the earth, laying hold of shoulders, knocking heads together, and setting the unconscious faces of the multitude towards inconceivable goals and in undreamt-of directions.`}
-    display(md`##### p${p}\n${typhoon['p'+p].text}`)  
+    typhoon['p'+p] = {text: `Having **just enough imagination to carry him through** each successive day, and no more, he was tranquilly sure of himself; and from the very same cause he was not in the least conceited. It is your imaginative superior who is touchy, overbearing, and difficult to please; but every ship Captain MacWhirr commanded was the floating abode of harmony and peace. It was, in truth, as impossible for him to take a flight of fancy as it would be for a watchmaker to put together a chronometer with nothing except a two-pound hammer and a whip-saw in the way of tools. Yet the uninteresting lives of men so entirely given to the actuality of the bare existence have their mysterious side. It was impossible in Captain MacWhirr’s case, for instance, to understand what under heaven could have induced that perfectly satisfactory son of a petty grocer in Belfast to run away to sea. And yet he had done that very thing at the age of fifteen. It was enough, when you thought it over, to give you the idea of **an immense, potent, and invisible hand** thrust into the ant-heap of the earth, laying hold of shoulders, knocking heads together, and setting the unconscious faces of the multitude towards inconceivable goals and in undreamt-of directions.`}
+    display(md`##### p${p}\n${typhoon['p'+p].text}`)
+  </script>
+  <script id="611" type="text/x-typescript">
+    let p = 2;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp: ${typhoon['p'+p].bp}\n- *Imagination is opposed to tranquility. MacWhirr has no tools or mechanism for ‘fancy,’ whereas models may be considered to be machines for precisely that, for generating cultural fancy within the ideology of their training (Weatherby). But MacWhirr has been able to act in an extraordinary way, almost as if he was taken up in his youth and redirected by a storm-like entity: “immense, potent, invisible,” by something resembling a typhoon. In fact, however, MacWhirr made a human choice and acted on it.*`)
   </script>
   <script id="47" type="text/x-typescript">
     let p = 3;
