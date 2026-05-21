@@ -100,6 +100,13 @@
 
     const tableContainer = display(html`<div></div>`);
 
+    function formatTtr(ms: number): string {
+      const totalSec = Math.round(ms / 1000);
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      return `${mins}:${String(secs).padStart(2, "0")}`;
+    }
+
     function buildTable() {
       const entries = [];
       for (const [key, value] of Object.entries(typhoon)) {
@@ -113,7 +120,7 @@
           type,
           wordCount,
           bp: value.bp ?? null,
-          ttr: value.ttr ?? null,
+          ttr: value.ttr != null ? formatTtr(value.ttr) : null,
           preview: value.text.slice(0, 80).replace(/\*\*/g, "") + (value.text.length > 80 ? "…" : "")
         });
       }
