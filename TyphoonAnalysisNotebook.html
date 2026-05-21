@@ -41,9 +41,6 @@
       return boldTexts ? boldTexts : `No emphasized text in ${p}.`
     }
   </script>
-  <script id="588" type="text/x-typescript" pinned="">
-    extractBoldTexts("p0")
-  </script>
   <script id="608" type="text/x-typescript" pinned="">
     import { RiTa } from "npm:rita";
     const { syllables, isPunct, tokenize } = RiTa;
@@ -96,29 +93,44 @@
     typhoon
   </script>
   <script id="615" type="text/x-typescript">
-    // Iterate through all properties of the typhoon object
-    const typhoonEntries = [];
+    // Button to trigger recalculation
+    const recalcBtn = display(html`<button style="margin-bottom: 0.75em; padding: 0.4em 1em; cursor: pointer;">
+      🔄 Recalculate table
+    </button>`);
 
-    for (const [key, value] of Object.entries(typhoon)) {
-      const type = key.startsWith("c") ? "chapter" : "paragraph";
-      const wordCount = value.text.trim().split(/\s+/).length;
+    const tableContainer = display(html`<div></div>`);
 
-      if (type === "paragraph") {
-        typhoon[key].ttr = paragraphReadTimes(typhoon[key].text).totalMs;
+    function buildTable() {
+      const entries = [];
+      for (const [key, value] of Object.entries(typhoon)) {
+        const type = key.startsWith("c") ? "chapter" : "paragraph";
+        const wordCount = value.text.trim().split(/\s+/).length;
+        if (type === "paragraph") {
+          typhoon[key].ttr = paragraphReadTimes(typhoon[key].text).totalMs;
+        }
+        entries.push({
+          key,
+          type,
+          wordCount,
+          bp: value.bp ?? null,
+          ttr: value.ttr ?? null,
+          preview: value.text.slice(0, 80).replace(/\*\*/g, "") + (value.text.length > 80 ? "…" : "")
+        });
       }
-
-      typhoonEntries.push({
-        key,
-        type,
-        wordCount,
-        bp: value.bp ?? null,
-        ttr: value.ttr ?? null,
-        preview: value.text.slice(0, 80).replace(/\*\*/g, "") + (value.text.length > 80 ? "…" : "")
-      });
+      return entries;
     }
 
-    display(md`**${typhoonEntries.length} entries** found in \`typhoon\`: **${typhoonEntries.filter(e => e.type === "chapter").length}** chapters, **${typhoonEntries.filter(e => e.type === "paragraph").length}** paragraphs`);
-    display(Inputs.table(typhoonEntries));
+    function render() {
+      const entries = buildTable();
+      tableContainer.innerHTML = "";
+      tableContainer.append(
+        html`<p><strong>${entries.length} entries</strong> found in \`typhoon\`: <strong>${entries.filter(e => e.type === "chapter").length}</strong> chapters, <strong>${entries.filter(e => e.type === "paragraph").length}</strong> paragraphs</p>`
+      );
+      tableContainer.append(Inputs.table(entries));
+    }
+
+    recalcBtn.addEventListener("click", render);
+    render();
   </script>
   <script id="5" type="text/html">
     <hr><b>Extra CSS is in this cell</b><hr>
@@ -154,7 +166,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="578" type="text/x-typescript">
-    let p = 0;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *In the first sentence of the novella, Captain MacWhirr is introduced as epitomizing a human engagement with his world that has little to do with speculative intelligence. His usual activities are not even* responses *to the the world. On the face of it, he is “irresponsive.” Overtly, he appears — particularly to chief mate Jukes — to be* “stupid” *and this is reaffirmed in the final sentence of the book.*\n- *For our allegory — in which language models, as cultural weather, are considered a typhoon — this introduces a singular relation to speculative and, later in the text, to archival ‘intelligence.’*`)
+    let p = 0;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}\n- *In the first sentence of the novella, Captain MacWhirr is introduced as epitomizing a human engagement with his world that has little to do with speculative intelligence. His usual activities are not even* responses *to the the world. On the face of it, he is “irresponsive.” Overtly, he appears — particularly to chief mate Jukes — to be* “stupid” *and this is reaffirmed in the final sentence of the book.*\n- *For our allegory — in which language models, as cultural weather, are considered a typhoon — this introduces a singular relation to speculative and, later in the text, to archival ‘intelligence.’*`)
   </script>
   <script id="45" type="text/x-typescript">
     let p = 1;
@@ -162,7 +174,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="581" type="text/x-typescript">
-    let p = 1;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *Both the chief mate, Jukes, and the chief engineer, Rout, are here first-mentioned as foils to the sketch of MacWhirr’s character, and in a manner that is disproportinately efficacious with respect to revealing their own.*`)
+    let p = 1;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}\n- *Both the chief mate, Jukes, and the chief engineer, Rout, are here first-mentioned as foils to the sketch of MacWhirr’s character, and in a manner that is disproportinately efficacious with respect to revealing their own.*`)
   </script>
   <script id="46" type="text/x-typescript">
     let p = 2;
@@ -170,7 +182,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="611" type="text/x-typescript">
-    let p = 2;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *Imagination is opposed to tranquility. MacWhirr has no tools or mechanism for ‘fancy,’ whereas models may be considered to be machines for precisely that, for generating cultural fancy within the ideology of their training (Weatherby). But MacWhirr has been able to act in an extraordinary way, almost as if he was taken up in his youth and redirected by a storm-like entity: “immense, potent, invisible,” by something resembling a typhoon. In fact, however, MacWhirr made a human choice and acted on it.*`)
+    let p = 2;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}\n- *Imagination is opposed to tranquility. MacWhirr has no tools or mechanism for ‘fancy,’ whereas models may be considered to be machines for precisely that, for generating cultural fancy within the ideology of their training (Weatherby). But MacWhirr has been able to act in an extraordinary way, almost as if he was taken up in his youth and redirected by a storm-like entity: “immense, potent, invisible,” by something resembling a typhoon. In fact, however, MacWhirr made a human choice and acted on it.*`)
   </script>
   <script id="47" type="text/x-typescript">
     let p = 3;
@@ -178,7 +190,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="616" type="text/x-typescript">
-    let p = 3;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 3;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="48" type="text/x-typescript">
     let p = 4;
@@ -186,7 +198,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="618" type="text/x-typescript">
-    let p = 4;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *MacWhirr can not even generate a ‘next-token’ fanciable adjective after his wife's name. Not before the narrator takes on his character to simply delete his parentage.*`)
+    let p = 4;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}\n- *MacWhirr can not even generate a ‘next-token’ fanciable adjective after his wife's name. Not before the narrator takes on his character to simply delete his parentage.*`)
   </script>
   <script id="49" type="text/x-typescript">
     let p = 5;
@@ -194,7 +206,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="619" type="text/x-typescript">
-    let p = 5;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 5;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="50" type="text/x-typescript">
     let p = 6;
@@ -202,7 +214,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="620" type="text/x-typescript">
-    let p = 6;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 6;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="51" type="text/x-typescript">
     let p = 7;
@@ -210,7 +222,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="621" type="text/x-typescript">
-    let p = 7;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *The prejudice, as related by Conrad, is colonialist and more or less exploitative rather than racial. (One is tempted to say “stupidly racial” but that would be to taint MacWhirr’s stupidity, which reveals itself as patient, fully human, altruism, emphasizing the ‘other’ in that last word.) Our perspective on the ‘Celestials’ is that of the ‘Master,’ his ‘Mates,’ and ‘Apprentices,’ rather than that of the ship owners or the general inhabitants of the colonizing powers. There is serious attention paid to the cultural habits of these others. This perspective, of the crew, shares subjugation to ‘employment’ with these men from China, and also gender homogeneity. These people are not passengers, in contract with the shipowners; their passage is, presumably, paid by their separate employers, who are also responsible for a convential gender bias. In commercial terms, the Chinese are placed at a similar remove, along with the crew, from the position of ‘principals,’ but they have been placed in the care of ship’s principals, with this care delegated to the crew. They are not owned by anyone, any more or less than the crew. When the narrative’s weather comes, these relations still obtain. When today’s weather breaks as cultural typhoon, the ill-represented ‘other’ is equally in the care of privileged employees, who better understand the colonialist structure and navigational context of this weather, but neither they nor their principals can fathom what this weather actually brings.*`)
+    let p = 7;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}\n- *The prejudice, as related by Conrad, is colonialist and more or less exploitative rather than racial. (One is tempted to say “stupidly racial” but that would be to taint MacWhirr’s stupidity, which reveals itself as patient, fully human, altruism, emphasizing the ‘other’ in that last word.) Our perspective on the ‘Celestials’ is that of the ‘Master,’ his ‘Mates,’ and ‘Apprentices,’ rather than that of the ship owners or the general inhabitants of the colonizing powers. There is serious attention paid to the cultural habits of these others. This perspective, of the crew, shares subjugation to ‘employment’ with these men from China, and also gender homogeneity. These people are not passengers, in contract with the shipowners; their passage is, presumably, paid by their separate employers, who are also responsible for a convential gender bias. In commercial terms, the Chinese are placed at a similar remove, along with the crew, from the position of ‘principals,’ but they have been placed in the care of ship’s principals, with this care delegated to the crew. They are not owned by anyone, any more or less than the crew. When the narrative’s weather comes, these relations still obtain. When today’s weather breaks as cultural typhoon, the ill-represented ‘other’ is equally in the care of privileged employees, who better understand the colonialist structure and navigational context of this weather, but neither they nor their principals can fathom what this weather actually brings.*`)
   </script>
   <script id="52" type="text/x-typescript">
     let p = 8;
@@ -218,7 +230,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)  
   </script>
   <script id="623" type="text/x-typescript">
-    let p = 8;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 8;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="53" type="text/x-typescript">
     let p = 9;
@@ -226,7 +238,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="624" type="text/x-typescript">
-    let p = 9;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 9;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="54" type="text/x-typescript">
     let p = 10;
@@ -234,7 +246,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="625" type="text/x-typescript">
-    let p = 10;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 10;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="55" type="text/x-typescript">
     let p = 11;
@@ -242,7 +254,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="626" type="text/x-typescript">
-    let p = 11;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 11;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="56" type="text/x-typescript">
     let p = 12;
@@ -250,7 +262,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="627" type="text/x-typescript">
-    let p = 12;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 12;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="57" type="text/x-typescript">
     let p = 13;
@@ -258,7 +270,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="628" type="text/x-typescript">
-    let p = 13;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 13;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="58" type="text/x-typescript">
     let p = 14;
@@ -266,7 +278,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="629" type="text/x-typescript">
-    let p = 14;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 14;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="59" type="text/x-typescript">
     let p = 15;
@@ -274,7 +286,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="630" type="text/x-typescript">
-    let p = 15;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 15;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="60" type="text/x-typescript">
     let p = 16;
@@ -282,7 +294,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="631" type="text/x-typescript">
-    let p = 16;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 16;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="61" type="text/x-typescript">
     let p = 17;
@@ -290,7 +302,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="632" type="text/x-typescript">
-    let p = 17;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 17;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="62" type="text/x-typescript">
     let p = 18;
@@ -298,7 +310,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="633" type="text/x-typescript">
-    let p = 18;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 18;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="63" type="text/x-typescript">
     let p = 19;
@@ -306,7 +318,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="634" type="text/x-typescript">
-    let p = 19;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 19;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="64" type="text/x-typescript">
     let p = 20;
@@ -314,7 +326,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="635" type="text/x-typescript">
-    let p = 20;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 20;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="65" type="text/x-typescript">
     let p = 21;
@@ -322,7 +334,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="637" type="text/x-typescript">
-    let p = 21;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 21;typhoon['p'+p].bp = 2;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="66" type="text/x-typescript">
     let p = 22;
@@ -330,7 +342,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="638" type="text/x-typescript">
-    let p = 22;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}\n- *Here is the onset of a mildly stormy little scene in which we see revealed personal prejudice of a nationalistic and mildly racist kind latent in Jukes. It goes beyond the colonialist prejudice that structures the entire narrative. We are thinking of ‘prejudice,’ in this context, as implying judgement, prediction, decision-making, and this helps us to relate it with the contemporary operations of the models that now structure the cultural record into an underlying, ideological narrative. Its average, normalized expression is everywhere, but the underlying potential for the expression of prejudice that is, in some manner, beyond normal does not necessarily achieve articulation. In the exchange which follows this is demonstrated in that Jukes does not make his prejudice explicit. We can* read *it nonetheless because Conrad is able imagine and describe human behavior that allows it to be read. Neither does MacWhirr, already representing a literally ‘dumb’ embodiment of the predominant, foundational (his is, perhaps,* a sub*normal) prejudice express anything in opposition to what underlies Jukes’ behavior and chiefly phatic outbursts. We can read their meaning but MacWhirr cannot or, he has no need to do so.*`)
+    let p = 22;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}\n- *Here is the onset of a mildly stormy little scene in which we see revealed personal prejudice of a nationalistic and mildly racist kind latent in Jukes. It goes beyond the colonialist prejudice that structures the entire narrative. We are thinking of ‘prejudice,’ in this context, as implying judgement, prediction, decision-making, and this helps us to relate it with the contemporary operations of the models that now structure the cultural record into an underlying, ideological narrative. Its average, normalized expression is everywhere, but the underlying potential for the expression of prejudice that is, in some manner, beyond normal does not necessarily achieve articulation. In the exchange which follows this is demonstrated in that Jukes does not make his prejudice explicit. We can* read *it nonetheless because Conrad is able imagine and describe human behavior that allows it to be read. Neither does MacWhirr, already representing a literally ‘dumb’ embodiment of the predominant, foundational (his is, perhaps,* a sub*normal) prejudice express anything in opposition to what underlies Jukes’ behavior and chiefly phatic outbursts. We can read their meaning but MacWhirr cannot or, he has no need to do so.*`)
   </script>
   <script id="67" type="text/x-typescript">
     let p = 23;
@@ -338,7 +350,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="639" type="text/x-typescript">
-    let p = 23;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 23;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="68" type="text/x-typescript">
     let p = 24;
@@ -346,7 +358,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="640" type="text/x-typescript">
-    let p = 24;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 24;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="69" type="text/x-typescript">
     let p = 25;
@@ -354,7 +366,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="641" type="text/x-typescript">
-    let p = 25;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 25;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="70" type="text/x-typescript">
     let p = 26;
@@ -362,7 +374,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="642" type="text/x-typescript">
-    let p = 26;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 26;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="71" type="text/x-typescript">
     let p = 27;
@@ -370,7 +382,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="644" type="text/x-typescript">
-    let p = 27;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 27;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="72" type="text/x-typescript">
     let p = 28;
@@ -378,7 +390,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="645" type="text/x-typescript">
-    let p = 28;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 28;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="73" type="text/x-typescript">
     let p = 29;
@@ -386,7 +398,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="646" type="text/x-typescript">
-    let p = 29;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 29;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="74" type="text/x-typescript">
     let p = 30;
@@ -394,7 +406,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="647" type="text/x-typescript">
-    let p = 30;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 30;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="75" type="text/x-typescript">
     let p = 31;
@@ -402,7 +414,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="648" type="text/x-typescript">
-    let p = 31;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 31;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="76" type="text/x-typescript">
     let p = 32;
@@ -410,7 +422,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="649" type="text/x-typescript">
-    let p = 32;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 32;typhoon['p'+p].bp = 3;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="77" type="text/x-typescript">
     let p = 33;
@@ -418,7 +430,7 @@
     display(md`##### p${p}\n${typhoon['p'+p].text}`)
   </script>
   <script id="650" type="text/x-typescript">
-    let p = 33;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp},ttr:${typhoon['p'+p].ttr}`)
+    let p = 33;typhoon['p'+p].bp = 4;display(md`###### p${p}.bp:${typhoon['p'+p].bp}`)
   </script>
   <script id="78" type="text/x-typescript">
     let p = 34;
