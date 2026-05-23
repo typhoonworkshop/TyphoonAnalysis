@@ -111,8 +111,9 @@
       const entries = [];
       for (const [key, value] of Object.entries(typhoon)) {
         const type = key.startsWith("c") ? "chapter" : "paragraph";
-        const wordCount = value.text.trim().split(/\s+/).length;
+        let wordCount = null;
         if (type === "paragraph") {
+          wordCount = value.text.trim().split(/\s+/).length;
           typhoon[key].ttr = paragraphReadTimes(typhoon[key].text).totalMs;
         }
         entries.push({
@@ -249,6 +250,15 @@
     })();
 
   </script>
+  <script id="680" type="text/x-typescript" pinned="">
+    function mkCell(out, pnum, beaufort, txt, commentary) {
+      typhoon['p'+pnum] = {text:txt,bf:beaufort,cm:commentary}
+      out(md`##### ${pnum}`)
+      out(md`${txt}`)
+      out(md`###### bf:${beaufort}`)
+      if (commentary) out(md`- *${commentary}*`)
+    }
+  </script>
   <script id="5" type="text/html">
     <hr><b>Extra CSS is in this cell</b><hr>
     <style>
@@ -273,18 +283,13 @@
     ---
   </script>
   <script id="43" type="text/x-typescript">
-    const c=0
-    typhoon['c'+c] = {text: `### I`}
-    display(md`${typhoon['c'+ c].text}`)
+    typhoon.c0 = {text: `### I`}
+    display(md`${typhoon.c0.text}`)
   </script>
   <script id="44" type="text/x-typescript">
-    const p=0,b=2,t=`Captain MacWhirr, of the steamer Nan-Shan, had **a physiognomy that**, in the order of material appearances, **was the exact counterpart of his mind**: it presented no marked characteristics of firmness or stupidity; it had no pronounced characteristics whatever; it was simply **ordinary, irresponsive, and unruffled**.`,
-    c=`In the first sentence of the novella, Captain MacWhirr is introduced as epitomizing a human engagement with his world that has little to do with speculative intelligence. His usual activities are not even* responses *to the the world. On the face of it, he is “irresponsive.” Overtly, he appears — particularly to chief mate Jukes — to be* “stupid” *and this is reaffirmed in the final sentence of the book.*\n- *For our allegory — in which language models, as cultural weather, are considered a typhoon — this introduces a singular relation to speculative and, later in the text, to archival ‘intelligence.’`
-    typhoon['p'+p] = {text:t,bf:b,cm:c}
-    display(md`##### ${p}`)
-    display(md`${t}`)
-    display(md`###### bf:${b}`)
-    if (c) display(md`- *${c}*`)
+    mkCell(display,0,2,
+    `Captain MacWhirr, of the steamer Nan-Shan, had **a physiognomy that**, in the order of material appearances, **was the exact counterpart of his mind**: it presented no marked characteristics of firmness or stupidity; it had no pronounced characteristics whatever; it was simply **ordinary, irresponsive, and unruffled**.`,
+    `In the first sentence of the novella, Captain MacWhirr is introduced as epitomizing a human engagement with his world that has little to do with speculative intelligence. His usual activities are not even* responses *to the the world. On the face of it, he is “irresponsive.” Overtly, he appears — particularly to chief mate Jukes — to be* “stupid” *and this is reaffirmed in the final sentence of the book.*\n- *For our allegory — in which language models, as cultural weather, are considered a typhoon — this introduces a singular relation to speculative and, later in the text, to archival ‘intelligence.’`)
   </script>
   <script id="45" type="text/x-typescript">
     const p=1,b=2,t=`The only thing his aspect might have been said to suggest, at times, was bashfulness; because he would sit, in business offices ashore, sunburnt and smiling faintly, with downcast eyes. When he raised them, they were perceived to be direct in their glance and of blue colour. His hair was fair and extremely fine, clasping from temple to temple the bald dome of his skull in a clamp as of fluffy silk. The hair of his face, on the contrary, carroty and flaming, resembled a growth of copper wire clipped short to the line of the lip; while, no matter how close he shaved, fiery metallic gleams passed, when he moved his head, over the surface of his cheeks. He was rather below the medium height, a bit round-shouldered, and so sturdy of limb that his clothes always looked a shade too tight for his arms and legs. As if unable to grasp what is due to the difference of latitudes, he wore a brown bowler hat, a complete suit of a brownish hue, and clumsy black boots. These harbour togs gave to his thick figure an air of stiff and uncouth smartness. A thin silver watch chain looped his waistcoat, and he never left his ship for the shore without clutching in his powerful, hairy fist an elegant umbrella of the very best quality, but generally unrolled. Young Jukes, the chief mate, attending his commander to the gangway, would sometimes venture to say, with the greatest gentleness, “Allow me, sir” — and possessing himself of the umbrella deferentially, would elevate the ferule, shake the folds, twirl a neat furl in a jiffy, and hand it back; going through the performance with a face of such portentous gravity, that Mr. Solomon Rout, the chief engineer, smoking his morning cigar over the skylight, would turn away his head in order to hide a smile. “Oh! aye! The blessed gamp … Thank ’ee, Jukes, thank ’ee,” would mutter Captain MacWhirr, heartily, without looking up.`,
@@ -5156,5 +5161,14 @@
   <script id="610" type="module" pinned="">
     // Inspect what's available on RiTa
     display(Object.getOwnPropertyNames(RiTa).filter(k => typeof RiTa[k] === 'function'))
+  </script>
+  <script id="678" type="module" pinned="">
+    // Check for duplicate paragraph keys in typhoon
+    const allKeys = Object.keys(typhoon).filter(k => k.startsWith("p"));
+    const nums = allKeys.map(k => parseInt(k.slice(1))).sort((a,b) => a-b);
+    const dupes = nums.filter((n, i) => nums.indexOf(n) !== i);
+    display(`Total paragraph keys: ${allKeys.length}`);
+    display(`Duplicate paragraph numbers: ${dupes.length ? dupes.join(", ") : "none"}`);
+    display(`Last 10 keys in insertion order: ${allKeys.slice(-10).join(", ")}`);
   </script>
 </notebook>
