@@ -139,6 +139,116 @@
     recalcBtn.addEventListener("click", render);
     render();
   </script>
+  <script id="677" type="text/x-typescript">
+    // xy chart — redraws when recalcBtn is clicked
+    const xyChart = (() => {
+      const container = display(html`<div></div>`);
+
+      function buildData() {
+        // Collect only paragraph entries (not chapters)
+        const entries: {key: string; ttr: number; bf: number | null}[] = [];
+        for (const [key, value] of Object.entries(typhoon)) {
+          if (!key.startsWith("p")) continue;
+          const ttr = value.ttr ?? paragraphReadTimes(value.text).totalMs;
+          entries.push({ key, ttr, bf: value.bf ?? null });
+        }
+        // Sort by paragraph number
+        entries.sort((a, b) => {
+          const na = parseInt(a.key.slice(1));
+          const nb = parseInt(b.key.slice(1));
+          return na - nb;
+        });
+        return entries;
+      }
+
+      function draw() {
+        const data = buildData();
+
+        // Cumulative x: running total of ttr across all paragraphs
+        let cumulative = 0;
+        const allPoints: {x: number; bf: number | null; key: string}[] = [];
+        for (const d of data) {
+          cumulative += d.ttr;
+          allPoints.push({ x: cumulative, bf: d.bf, key: d.key });
+        }
+
+        // Only plot the line up to the last paragraph with a bf value
+        const bfPoints = allPoints.filter(d => d.bf !== null);
+
+        const totalMs = cumulative;
+
+        // Format x-axis ticks as mm:ss
+        function fmtMs(ms: number): string {
+          const s = Math.round(ms / 1000);
+          const m = Math.floor(s / 60);
+          const sec = s % 60;
+          return `${m}:${String(sec).padStart(2, "0")}`;
+        }
+
+        const plot = Plot.plot({
+          title: "‘Beaufort Scale’ along Time to Read",
+          subtitle: `bf score per paragraph · x-axis spans full text (${fmtMs(totalMs)} estimated reading time)`,
+          width: 900,
+          height: 320,
+          marginLeft: 50,
+          marginBottom: 50,
+          x: {
+            label: "Cumulative reading time (mm:ss) →",
+            domain: [0, totalMs],
+            tickFormat: (d: number) => fmtMs(d),
+            ticks: 10
+          },
+          y: {
+            label: "↑ bf",
+            domain: [0, 12],
+            grid: true
+          },
+          marks: [
+            // Full x-axis extent shown via a faint rule at y=0
+            Plot.ruleY([0], { stroke: "#ccc" }),
+            // The bf line, only up to where bf values exist
+            Plot.line(bfPoints, {
+              x: "x",
+              y: "bf",
+              stroke: "steelblue",
+              strokeWidth: 1.5,
+              curve: "monotone-x"
+            }),
+            // Dots at each bf point
+            Plot.dot(bfPoints, {
+              x: "x",
+              y: "bf",
+              fill: "steelblue",
+              r: 3,
+              tip: true,
+              title: (d: {key: string; bf: number}) => `${d.key}  bf: ${d.bf}\n${fmtMs(d.x)}`
+            }),
+            // Vertical marker showing where bf annotations end
+            Plot.ruleX([bfPoints.at(-1)?.x ?? 0], {
+              stroke: "#e07",
+              strokeDasharray: "4,3",
+              strokeWidth: 1
+            })
+          ]
+        });
+
+        container.innerHTML = "";
+        container.append(plot);
+      }
+
+      // Initial draw
+      draw();
+
+      // Redraw when recalcBtn is clicked
+      recalcBtn.addEventListener("click", () => {
+        // Small delay so the table cell's ttr values are written first
+        setTimeout(draw, 50);
+      });
+
+      return { draw, container };
+    })();
+
+  </script>
   <script id="5" type="text/html">
     <hr><b>Extra CSS is in this cell</b><hr>
     <style>
