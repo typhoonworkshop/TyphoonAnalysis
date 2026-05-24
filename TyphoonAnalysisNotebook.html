@@ -22,6 +22,37 @@
   <script id="42" type="text/x-typescript" pinned="">
     const typhoon = {};
   </script>
+  <script id="681" type="text/x-typescript" pinned="">
+    // Paragraph key migration helpers: canonical form is now the numeric string ("0", "1", ...).
+    const paragraphKey = (pnum: number | string): string => String(pnum).replace(/^p/, "");
+
+    function isParagraphKey(key: string): boolean {
+      return /^\d+$/.test(key) || /^p\d+$/.test(key);
+    }
+
+    function paragraphNumberFromKey(key: string): number {
+      return parseInt(key.replace(/^p/, ""), 10);
+    }
+
+    function paragraphEntries(source: Record<string, any>) {
+      const byNumber = new Map<number, {key: string; value: any}>();
+      for (const [key, value] of Object.entries(source)) {
+        if (!isParagraphKey(key)) continue;
+        const n = paragraphNumberFromKey(key);
+        const existing = byNumber.get(n);
+        // Prefer canonical unprefixed keys when both formats exist.
+        if (!existing || /^\d+$/.test(key)) byNumber.set(n, { key, value });
+      }
+      return [...byNumber.entries()]
+        .sort((a, b) => a[0] - b[0])
+        .map(([, entry]) => entry);
+    }
+
+    function getParagraph(source: Record<string, any>, ref: number | string) {
+      const canonical = paragraphKey(ref);
+      return source[canonical] ?? source[`p${canonical}`];
+    }
+  </script>
   <script id="39" type="text/x-typescript">
     const typhoonArray = (() => {
       const arr = []
@@ -36,7 +67,9 @@
   </script>
   <script id="579" type="text/x-typescript" pinned="">
     function extractBoldTexts (p) {
-      const boldMatches = typhoon[p].text.match(/\*\*(.+?)\*\*/g);
+      const para = getParagraph(typhoon, p);
+      if (!para) return `Paragraph ${p} not found.`;
+      const boldMatches = para.text.match(/\*\*(.+?)\*\*/g);
       const boldTexts = boldMatches?.map((m: string) => m.replace(/\*\*/g, ""));
       return boldTexts ? boldTexts : `No emphasized text in ${p}.`
     }
@@ -110,7 +143,7 @@
     function buildTable() {
       const entries = [];
       for (const [key, value] of Object.entries(typhoon)) {
-        const type = key.startsWith("c") ? "chapter" : "paragraph";
+        const type = key.startsWith("c") ? "chapter" : (isParagraphKey(key) ? "paragraph" : "other");
         let wordCount = null;
         if (type === "paragraph") {
           wordCount = value.text.trim().split(/\s+/).length;
@@ -148,17 +181,10 @@
       function buildData() {
         // Collect only paragraph entries (not chapters)
         const entries: {key: string; ttr: number; bf: number | null}[] = [];
-        for (const [key, value] of Object.entries(typhoon)) {
-          if (!key.startsWith("p")) continue;
+        for (const { key, value } of paragraphEntries(typhoon)) {
           const ttr = value.ttr ?? paragraphReadTimes(value.text).totalMs;
           entries.push({ key, ttr, bf: value.bf ?? null });
         }
-        // Sort by paragraph number
-        entries.sort((a, b) => {
-          const na = parseInt(a.key.slice(1));
-          const nb = parseInt(b.key.slice(1));
-          return na - nb;
-        });
         return entries;
       }
 
@@ -251,8 +277,8 @@
 
   </script>
   <script id="680" type="text/x-typescript" pinned="">
-    function mkCell(out, pnum, beaufort, txt, commentary) {
-      typhoon['p'+pnum] = {text:txt,bf:beaufort,cm:commentary}
+    function mkCell(out: function, pnum: number, beaufort: number, txt: string, commentary: string) {
+      typhoon[paragraphKey(pnum)] = {text:txt,bf:beaufort,cm:commentary}
       out(md`##### ${pnum}`)
       out(md`${txt}`)
       out(md`###### bf:${beaufort}`)
@@ -283,8 +309,8 @@
     ---
   </script>
   <script id="43" type="text/x-typescript">
-    typhoon.c0 = {text: `### I`}
-    display(md`${typhoon.c0.text}`)
+    typhoon.c0 = {text: "I", start: 0, end: 58}
+    display(md`### I`)
   </script>
   <script id="44" type="text/x-typescript">
     mkCell(display,0,2,
@@ -582,9 +608,8 @@
     ``)
   </script>
   <script id="103" type="text/x-typescript">
-    let c=1
-    typhoon['c'+c] = {text: `### II`}
-    display(md`${typhoon['c'+ c].text}`)
+    typhoon.c1 = {text: "II", start: 59, end: 177}
+    display(md`### II`)
   </script>
   <script id="104" type="text/x-typescript">
     mkCell(display,59,2,
@@ -1182,93 +1207,92 @@
     ``)
   </script>
   <script id="223" type="text/x-typescript">
-    let c=2
-    typhoon['c'+c] = {text: `### III`}
-    display(md`${typhoon['c'+ c].text}`)
+    typhoon.c2 = {text: "III", start: 178, end: 200}
+    display(md`### III`)
   </script>
   <script id="224" type="text/x-typescript">
-    mkCell(display,181,null,
+    mkCell(display,178,9,
     `Jukes was as ready a man as any half-dozen young mates that may be caught by casting a net upon the waters; and though he had been somewhat taken aback by the startling viciousness of the first squall, he had pulled himself together on the instant, had called out the hands and had rushed them along to secure such openings about the deck as had not been already battened down earlier in the evening. Shouting in his fresh, stentorian voice, “Jump, boys, and bear a hand!” he led in the work, telling himself the while that he had “just expected this.”`,
     ``)
   </script>
   <script id="225" type="text/x-typescript">
-    mkCell(display,182,null,
+    mkCell(display,179,10,
     `But at the same time he was growing aware that this was rather more than he had expected. From the first stir of the air felt on his cheek the gale seemed to take upon itself the accumulated impetus of an avalanche. Heavy sprays enveloped the Nan-Shan from stem to stern, and instantly in the midst of her regular rolling she began to jerk and plunge as though she had gone mad with fright.`,
     ``)
   </script>
   <script id="226" type="text/x-typescript">
-    mkCell(display,183,null,
-    `Jukes thought, “This is no joke.” While he was exchanging explanatory yells with his captain, a sudden lowering of the darkness came upon the night, falling before their vision like something palpable. It was as if the masked lights of the world had been turned down. Jukes was uncritically glad to have his captain at hand. It relieved him as though that man had, by simply coming on deck, taken most of the gale’s weight upon his shoulders. Such is the prestige, the privilege, and the burden of command.`,
+    mkCell(display,180,9,
+    `Jukes thought, “This is no joke.” While he was exchanging explanatory yells with his captain, a sudden lowering of the darkness came upon the night, falling before their vision like something palpable. It was as if **the masked lights of the world had been turned down**. Jukes was uncritically glad to have his captain at hand. It relieved him as though that man had, by simply coming on deck, taken most of the gale’s weight upon his shoulders. Such is the prestige, the privilege, and the burden of command.`,
     ``)
   </script>
   <script id="227" type="text/x-typescript">
-    mkCell(display,184,null,
+    mkCell(display,181,9,
     `Captain MacWhirr could expect no relief of that sort from any one on earth. Such is the loneliness of command. He was trying to see, with that watchful manner of a seaman who stares into the wind’s eye as if into the eye of an adversary, to penetrate the hidden intention and guess the aim and force of the thrust. The strong wind swept at him out of a vast obscurity; he felt under his feet the uneasiness of his ship, and he could not even discern the shadow of her shape. He wished it were not so; and very still he waited, feeling stricken by a blind man’s helplessness.`,
     ``)
   </script>
   <script id="228" type="text/x-typescript">
-    mkCell(display,185,null,
-    `To be silent was natural to him, dark or shine. Jukes, at his elbow, made himself heard yelling cheerily in the gusts, “We must have got the worst of it at once, sir.” A faint burst of lightning quivered all round, as if flashed into a cavern — into a black and secret chamber of the sea, with a floor of foaming crests.`,
+    mkCell(display,182,9,
+    `To be silent was natural to him, dark or shine. Jukes, at his elbow, made himself heard yelling cheerily in the gusts, “We must have got the worst of it at once, sir.” A faint burst of lightning quivered all round, as if flashed into a cavern — into **a black and secret chamber of the sea**, with **a floor of foaming crests**.`,
     ``)
   </script>
   <script id="229" type="text/x-typescript">
-    mkCell(display,186,null,
-    `It unveiled for a sinister, fluttering moment a ragged mass of clouds hanging low, the lurch of the long outlines of the ship, the black figures of men caught on the bridge, heads forward, as if petrified in the act of butting. The darkness palpitated down upon all this, and then the real thing came at last.`,
+    mkCell(display,183,10,
+    `It unveiled for a sinister, fluttering moment a ragged mass of clouds hanging low, the lurch of the long outlines of the ship, the black figures of men caught on the bridge, heads forward, as if petrified in the act of butting. The **darkness palpitated down upon all this**, and then **the real thing came at last**.`,
     ``)
   </script>
   <script id="230" type="text/x-typescript">
-    mkCell(display,187,null,
-    `It was something formidable and swift, like the sudden smashing of a vial of wrath. It seemed to explode all round the ship with an overpowering concussion and a rush of great waters, as if an immense dam had been blown up to windward. In an instant the men lost touch of each other. This is the disintegrating power of a great wind: it isolates one from one’s kind. An earthquake, a landslip, an avalanche, overtake a man incidentally, as it were — without passion. A furious gale attacks him like a personal enemy, tries to grasp his limbs, fastens upon his mind, seeks to rout his very spirit out of him.`,
+    mkCell(display,184,11,
+    `It was something formidable and swift, like **the sudden smashing of a vial of wrath**. It seemed to explode all round the ship with **an overpowering concussion** and a rush of great waters, as if an immense dam had been blown up to windward. In an instant the men lost touch of each other. This is **the disintegrating power of a great wind**: it isolates one from one’s kind. An earthquake, a landslip, an avalanche, overtake a man incidentally, as it were — without passion. A **furious gale attacks him like a personal enemy**, tries to grasp his limbs, fastens upon his mind, seeks to rout his very spirit out of him.`,
     ``)
   </script>
   <script id="231" type="text/x-typescript">
-    mkCell(display,188,null,
+    mkCell(display,185,11,
     `Jukes was driven away from his commander. He fancied himself whirled a great distance through the air. Everything disappeared — even, for a moment, his power of thinking; but his hand had found one of the rail-stanchions. His distress was by no means alleviated by an inclination to disbelieve the reality of this experience. Though young, he had seen some bad weather, and had never doubted his ability to imagine the worst; but this was so much beyond his powers of fancy that it appeared incompatible with the existence of any ship whatever. He would have been incredulous about himself in the same way, perhaps, had he not been so harassed by the necessity of exerting a wrestling effort against a force trying to tear him away from his hold. Moreover, the conviction of not being utterly destroyed returned to him through the sensations of being half-drowned, bestially shaken, and partly choked.`,
     ``)
   </script>
   <script id="232" type="text/x-typescript">
-    mkCell(display,189,null,
-    `It seemed to him he remained there precariously alone with the stanchion for a long, long time. The rain poured on him, flowed, drove in sheets. He breathed in gasps; and sometimes the water he swallowed was fresh and sometimes it was salt. For the most part he kept his eyes shut tight, as if suspecting his sight might be destroyed in the immense flurry of the elements. When he ventured to blink hastily, he derived some moral support from the green gleam of the starboard light shining feebly upon the flight of rain and sprays. He was actually looking at it when its ray fell upon the uprearing sea which put it out. He saw the head of the wave topple over, adding the mite of its crash to the tremendous uproar raging around him, and almost at the same instant the stanchion was wrenched away from his embracing arms. After a crushing thump on his back he found himself suddenly afloat and borne upwards. His first irresistible notion was that the whole China Sea had climbed on the bridge. Then, more sanely, he concluded himself gone overboard. All the time he was being tossed, flung, and rolled in great volumes of water, he kept on repeating mentally, with the utmost precipitation, the words: “My God! My God! My God! My God!”`,
+    mkCell(display,186,12,
+    `It seemed to him he remained there precariously alone with the stanchion for a long, long time. The rain poured on him, flowed, drove in sheets. He breathed in gasps; and sometimes the water he swallowed was fresh and sometimes it was salt. For the most part he kept his eyes shut tight, as if suspecting his sight might be destroyed in the immense flurry of the elements. When he ventured to blink hastily, he derived some moral support from the green gleam of the starboard light shining feebly upon the flight of rain and sprays. He was actually looking at it when its ray fell upon the uprearing sea which put it out. He saw the head of the wave topple over, adding the mite of its crash to the tremendous uproar raging around him, and almost at the same instant the stanchion was wrenched away from his embracing arms. After a crushing thump on his back he found himself suddenly afloat and borne upwards. His first irresistible notion was that **the whole China Sea had climbed on the bridge**. Then, more sanely, he concluded himself gone overboard. All the time he was being **tossed, flung, and rolled in great volumes of water**, he kept on repeating mentally, with the utmost precipitation, the words: “My God! My God! My God! My God!”`,
     ``)
   </script>
   <script id="233" type="text/x-typescript">
-    mkCell(display,190,null,
+    mkCell(display,187,11,
     `All at once, in a revolt of misery and despair, he formed the crazy resolution to get out of that. And he began to thresh about with his arms and legs. But as soon as he commenced his wretched struggles he discovered that he had become somehow mixed up with a face, an oilskin coat, somebody’s boots. He clawed ferociously all these things in turn, lost them, found them again, lost them once more, and finally was himself caught in the firm clasp of a pair of stout arms. He returned the embrace closely round a thick solid body. He had found his captain.`,
     ``)
   </script>
   <script id="234" type="text/x-typescript">
-    mkCell(display,191,null,
+    mkCell(display,188,11,
     `They tumbled over and over, tightening their hug. Suddenly the water let them down with a brutal bang; and, stranded against the side of the wheelhouse, out of breath and bruised, they were left to stagger up in the wind and hold on where they could.`,
     ``)
   </script>
   <script id="235" type="text/x-typescript">
-    mkCell(display,192,null,
+    mkCell(display,189,11,
     `Jukes came out of it rather horrified, as though he had escaped some unparalleled outrage directed at his feelings. It weakened his faith in himself. He started shouting aimlessly to the man he could feel near him in that fiendish blackness, “Is it you, sir? Is it you, sir?” till his temples seemed ready to burst. And he heard in answer a voice, as if crying far away, as if screaming to him fretfully from a very great distance, the one word “Yes!” Other seas swept again over the bridge. He received them defencelessly right over his bare head, with both his hands engaged in holding.`,
     ``)
   </script>
   <script id="236" type="text/x-typescript">
-    mkCell(display,193,null,
+    mkCell(display,190,11,
     `The motion of the ship was extravagant. Her lurches had an appalling helplessness: she pitched as if taking a header into a void, and seemed to find a wall to hit every time. When she rolled she fell on her side headlong, and she would be righted back by such a demolishing blow that Jukes felt her reeling as a clubbed man reels before he collapses. The gale howled and scuffled about gigantically in the darkness, as though the entire world were one black gully. At certain moments the air streamed against the ship as if sucked through a tunnel with a concentrated solid force of impact that seemed to lift her clean out of the water and keep her up for an instant with only a quiver running through her from end to end. And then she would begin her tumbling again as if dropped back into a boiling cauldron. Jukes tried hard to compose his mind and judge things coolly.`,
     ``)
   </script>
   <script id="237" type="text/x-typescript">
-    mkCell(display,194,null,
-    `The sea, flattened down in the heavier gusts, would uprise and overwhelm both ends of the Nan-Shan in snowy rushes of foam, expanding wide, beyond both rails, into the night. And on this dazzling sheet, spread under the blackness of the clouds and emitting a bluish glow, Captain MacWhirr could catch a desolate glimpse of a few tiny specks black as ebony, the tops of the hatches, the battened companions, the heads of the covered winches, the foot of a mast. This was all he could see of his ship. Her middle structure, covered by the bridge which bore him, his mate, the closed wheelhouse where a man was steering shut up with the fear of being swept overboard together with the whole thing in one great crash — her middle structure was like a half-tide rock awash upon a coast. It was like an outlying rock with the water boiling up, streaming over, pouring off, beating round — like a rock in the surf to which shipwrecked people cling before they let go — only it rose, it sank, it rolled continuously, without respite and rest, like a rock that should have miraculously struck adrift from a coast and gone wallowing upon the sea.`,
+    mkCell(display,191,11,
+    `The sea, flattened down in the heavier gusts, would uprise and overwhelm both ends of the Nan-Shan in snowy rushes of foam, expanding wide, beyond both rails, into the night. And on this dazzling sheet, spread under the blackness of the clouds and emitting a bluish glow, Captain MacWhirr could catch a desolate glimpse of a few tiny specks black as ebony, the tops of the hatches, the battened companions, the heads of the covered winches, the foot of a mast. This was all he could see of his ship. Her middle structure, covered by the bridge which bore him, his mate, the closed wheelhouse where a man was steering shut up with the fear of being swept overboard together with the whole thing in one great crash — her middle structure was like a half-tide rock awash upon a coast. It was like an outlying rock with **the water boiling up**, **streaming over**, **pouring off**, **beating round** — like a rock in the surf to which shipwrecked people cling before they let go — only it rose, it sank, it rolled continuously, without respite and rest, like a rock that should have miraculously struck adrift from a coast and **gone wallowing upon the sea**.`,
     ``)
   </script>
   <script id="238" type="text/x-typescript">
-    mkCell(display,195,null,
-    `The Nan-Shan was being looted by the storm with a senseless, destructive fury: trysails torn out of the extra gaskets, double-lashed awnings blown away, bridge swept clean, weather-cloths burst, rails twisted, light-screens smashed — and two of the boats had gone already. They had gone unheard and unseen, melting, as it were, in the shock and smother of the wave. It was only later, when upon the white flash of another high sea hurling itself amidships, Jukes had a vision of two pairs of davits leaping black and empty out of the solid blackness, with one overhauled fall flying and an iron-bound block capering in the air, that he became aware of what had happened within about three yards of his back.`,
+    mkCell(display,192,11,
+    `The Nan-Shan was being **looted by the storm** with a **senseless, destructive fury**: trysails torn out of the extra gaskets, double-lashed awnings blown away, bridge swept clean, weather-cloths burst, rails twisted, light-screens smashed — and two of the boats had gone already. They had gone unheard and unseen, melting, as it were, in the shock and smother of the wave. It was only later, when upon the white flash of another high sea hurling itself amidships, Jukes had a vision of two pairs of davits leaping black and empty out of the solid blackness, with one overhauled fall flying and an iron-bound block capering in the air, that he became aware of what had happened within about three yards of his back.`,
     ``)
   </script>
   <script id="239" type="text/x-typescript">
-    mkCell(display,196,null,
+    mkCell(display,193,10,
     `He poked his head forward, groping for the ear of his commander. His lips touched it — big, fleshy, very wet. He cried in an agitated tone, “Our boats are going now, sir.”`,
     ``)
   </script>
   <script id="240" type="text/x-typescript">
-    mkCell(display,197,null,
-    `And again he heard that voice, forced and ringing feebly, but with a penetrating effect of quietness in the enormous discord of noises, as if sent out from some remote spot of peace beyond the black wastes of the gale; again he heard a man’s voice — the frail and indomitable sound that can be made to carry an infinity of thought, resolution and purpose, that shall be pronouncing confident words on the last day, when heavens fall, and justice is done — again he heard it, and it was crying to him, as if from very, very far — “All right.”`,
+    mkCell(display,194,10,
+    `And again he heard that voice, forced and ringing feebly, but with a penetrating effect of quietness in the enormous discord of noises, as if sent out from some remote spot of peace beyond the black wastes of the gale; again he heard a man’s voice — **the frail and indomitable sound** that can be **made to carry an infinity of thought**, resolution and purpose, that shall be pronouncing confident words on the last day, when heavens fall, and justice is done — again he heard it, and it was crying to him, as if from very, very far — “All right.”`,
     ``)
   </script>
   <script id="241" type="text/x-typescript">
@@ -3052,8 +3076,8 @@
   </script>
   <script id="678" type="module" pinned="">
     // Check for duplicate paragraph keys in typhoon
-    const allKeys = Object.keys(typhoon).filter(k => k.startsWith("p"));
-    const nums = allKeys.map(k => parseInt(k.slice(1))).sort((a,b) => a-b);
+    const allKeys = Object.keys(typhoon).filter(k => isParagraphKey(k));
+    const nums = allKeys.map(k => paragraphNumberFromKey(k)).sort((a,b) => a-b);
     const dupes = nums.filter((n, i) => nums.indexOf(n) !== i);
     display(`Total paragraph keys: ${allKeys.length}`);
     display(`Duplicate paragraph numbers: ${dupes.length ? dupes.join(", ") : "none"}`);
