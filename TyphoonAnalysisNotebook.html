@@ -72,6 +72,7 @@
   <script id="589" type="text/x-typescript" pinned="">
     const PUNCT_PAUSE_MS = 700;
     const VOWEL_WEIGHT = 1.5;
+    const TIME_FACTOR = 20; // reading five times faster that normal (bf curve unchanged)
 
     function normalize(token: string): string {
       token = token.trim();
@@ -85,7 +86,7 @@
         .replace(/[\u201C\u201D\u2018\u2019]/g, "");
     }
 
-    function timeToRead(rawToken: string, lengthOfWhiteSpace: number = 1, factor: number = 1): number {
+    function timeToRead(rawToken: string, lengthOfWhiteSpace: number = 1, factor: number = TIME_FACTOR): number {
       const token = normalize(rawToken);
       const base = 33;
       let ttr = base;
