@@ -166,6 +166,9 @@
     function buildTable() {
       const entries = [];
       for (const [key, value] of Object.entries(typhoon)) {
+        // Skip entries that have no text (e.g. section markers like s0, s1)
+        if (!value || typeof value.text !== "string") continue;
+
         const type = key.startsWith("c") ? "chapter" : (isParagraphKey(key) ? "paragraph" : "other");
         let wordCount = null;
         if (type === "paragraph") {
