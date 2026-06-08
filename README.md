@@ -1,7 +1,7 @@
 # TyphoonAnalysis
 John's analysis of Conrad's text with the intention of generating metadata
 
-This repo contains an Observable Notebook – `TyphoonAnalysisNotebook.html` – with the entire Typhoon text chopped up into paragraphs, one cell per manually editable paragraph.
+This repo contains an Observable Notebook – `nbks/TyphoonAnalysisNotebook.html` – with the entire Typhoon text chopped up into paragraphs, one cell per manually editable paragraph.
 
 Observable Notebooks are .html files. They can be read conveniently On MacOS computers via the downloadable [Observable Desktop](https://observablehq.com/notebook-kit/desktop) app.
 
