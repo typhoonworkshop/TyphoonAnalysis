@@ -14,9 +14,7 @@
     ---
   </script>
   <script id="2" type="text/x-typescript">
-    const typhoonGBResponse = await fetch("typhoonGB.txt");
-    if (!typhoonGBResponse.ok) throw new Error(`Failed to load typhoonGB.txt: ${typhoonGBResponse.status} ${typhoonGBResponse.statusText}`);
-    const typhoonGB = await typhoonGBResponse.text();
+    const typhoonGB = await FileAttachment("typhoonGB.txt").text();
     display(md`Loaded \`typhoonGB.txt\`: ${typhoonGB.length.toLocaleString()} characters. \`const typhoonGB\` contains the text.`);
   </script>
   <script id="42" type="text/x-typescript" pinned="">
