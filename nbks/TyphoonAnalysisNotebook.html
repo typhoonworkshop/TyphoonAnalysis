@@ -2,11 +2,12 @@
 <notebook theme="cotton">
   <title>Typhoon Analysis Notebook</title>
   <script id="1" type="text/markdown">
-    # *Typhoon* Analysis Notebook
+    # _Typhoon_ Analysis Notebook
   </script>
   <script id="587" type="text/markdown">
-    #### *Note on the text*
-    *I first read* Typhoon *in a North American edition belonging to my maternal great grandfather, one that was probably based on a North American serialization. The digital text that we use here is from Project Gutenberg and is based on an original English book edition. When going through the text for this analysis I have used the* Oxford World’s Classics *Kindle edition, chiefly to confirm paragraph breaks and also for chapter divisions.*
+    #### _Note on the text_
+
+    _I first read_ Typhoon _in a North American edition belonging to my maternal great grandfather, one that was probably based on a North American serialization. The digital text that we use here is from Project Gutenberg and is based on an original English book edition. When going through the text for this analysis I have used the_ Oxford World’s Classics _Kindle edition, chiefly to confirm paragraph breaks and also for chapter divisions._
   </script>
   <script id="20" type="text/markdown">
     ---
@@ -161,25 +162,65 @@
       return `${mins}:${String(secs).padStart(2, "0")}`;
     }
 
+    function isSectionKey(key: string): boolean {
+      return /^s\d+$/.test(key);
+    }
+
+    function isChapterKey(key: string): boolean {
+      return /^c\d+$/.test(key);
+    }
+
     function buildTable() {
       const entries = [];
       for (const [key, value] of Object.entries(typhoon)) {
-        // Skip entries that have no text (e.g. section markers like s0, s1)
-        if (!value || typeof value.text !== "string") continue;
+        if (!value || typeof value !== "object") continue;
 
-        const type = key.startsWith("c") ? "chapter" : (isParagraphKey(key) ? "paragraph" : "other");
-        let wordCount = null;
-        if (type === "paragraph") {
-          wordCount = value.text.trim().split(/\s+/).length;
-          typhoon[key].ttr = paragraphReadTimes(typhoon[key].text).totalMs;
+        let type: string;
+        if (isChapterKey(key)) {
+          type = "chapter";
+        } else if (isSectionKey(key)) {
+          type = "section";
+        } else if (isParagraphKey(key)) {
+          type = "paragraph";
+        } else {
+          type = "other";
         }
+
+        let wordCount = null;
+        let ttrFmt = null;
+        let preview = "";
+        let desc = null;
+        let span = null;
+
+        if (type === "paragraph") {
+          const text = (value as any).text ?? "";
+          wordCount = text.trim().split(/\s+/).length;
+          typhoon[key].ttr = paragraphReadTimes(text).totalMs;
+          ttrFmt = formatTtr(typhoon[key].ttr);
+          preview = text.slice(0, 80).replace(/\*\*/g, "") + (text.length > 80 ? "…" : "");
+        } else if (type === "chapter") {
+          const text = (value as any).text ?? "";
+          preview = text.slice(0, 80);
+          const start = (value as any).start;
+          const end = (value as any).end;
+          if (start != null && end != null) span = `${start}–${end}`;
+        } else if (type === "section") {
+          desc = (value as any).desc ?? null;
+          const start = (value as any).start;
+          const end = (value as any).end;
+          if (start != null && end != null) span = `${start}–${end}`;
+          preview = desc ?? "";
+        }
+
         entries.push({
           key,
           type,
           wordCount,
-          bf: value.bf ?? null,
-          ttr: value.ttr != null ? formatTtr(value.ttr) : null,
-          preview: value.text.slice(0, 80).replace(/\*\*/g, "") + (value.text.length > 80 ? "…" : "")
+          bf: (value as any).bf ?? null,
+          ttr: ttrFmt,
+          span,
+          desc,
+          preview
         });
       }
       return entries;
@@ -187,11 +228,31 @@
 
     function render() {
       const entries = buildTable();
+      const chapterCount = entries.filter(e => e.type === "chapter").length;
+      const sectionCount = entries.filter(e => e.type === "section").length;
+      const paraCount    = entries.filter(e => e.type === "paragraph").length;
+
       tableContainer.innerHTML = "";
       tableContainer.append(
-        html`<p><strong>${entries.length} entries</strong> found in <code>typhoon</code>: <strong>${entries.filter(e => e.type === "chapter").length}</strong> chapters, <strong>${entries.filter(e => e.type === "paragraph").length}</strong> paragraphs</p>`
+        html`<p>
+          <strong>${entries.length} entries</strong> found in <code>typhoon</code>:
+          <strong>${chapterCount}</strong> chapters,
+          <strong>${sectionCount}</strong> sections,
+          <strong>${paraCount}</strong> paragraphs
+        </p>`
       );
-      tableContainer.append(Inputs.table(entries));
+      tableContainer.append(Inputs.table(entries, {
+        columns: ["key", "type", "span", "wordCount", "bf", "ttr", "preview"],
+        header: {
+          key: "key",
+          type: "type",
+          span: "paragraphs",
+          wordCount: "words",
+          bf: "bf",
+          ttr: "ttr",
+          preview: "preview / description"
+        }
+      }));
     }
 
     recalcBtn.addEventListener("click", render);
@@ -298,16 +359,18 @@
 
       return { draw, container };
     })();
-
   </script>
   <script id="5" type="text/html">
-    <hr><b>Extra CSS is in this cell</b><hr>
+    <hr />
+    <b>Extra CSS is in this cell</b>
+    <hr />
     <style>
-      h5, h6 {
+      h5,
+      h6 {
         text-align: right;
         margin: 0;
         font-weight: normal;
-        font-family: ui-monospace, 'Source Code Pro', monospace;
+        font-family: ui-monospace, "Source Code Pro", monospace;
       }
       h5 {
         font-weight: bold;
@@ -322,12 +385,12 @@
   </script>
   <script id="580" type="text/markdown">
     ---
+
     ## Analysis
-    ---
   </script>
   <script id="43" type="text/x-typescript">
     typhoon.c0 = {text: "I", start: 0, end: 58}
-    display(md`### I`)
+    display(md`---\n### I`)
     typhoon.s0 = {desc: "MacWhirr’s Background", start: 0, end: 5}
     display(md`###### —s0— ${typhoon.s0.desc}`)
   </script>
@@ -656,7 +719,7 @@
   </script>
   <script id="103" type="text/x-typescript">
     typhoon.c1 = {text: "II", start: 59, end: 177}
-    display(md`### II`)
+    display(md`---\n### II`)
     typhoon.s8 = {desc: "Fall of the Barometer", start: 59, end: 64}
     display(md`###### —s8— ${typhoon.s8.desc}`)
   </script>
@@ -669,6 +732,10 @@
     mkCell(display,60,1,
     `The Nan-Shan was ploughing a vanishing furrow upon the circle of the sea that had the surface and the shimmer of an undulating piece of gray silk. The sun, pale and without rays, poured down leaden heat in a strangely indecisive light, and the Chinamen were lying prostrate about the decks. Their bloodless, pinched, yellow faces were like the faces of bilious invalids. Captain MacWhirr noticed two of them especially, stretched out on their backs below the bridge. As soon as they had closed their eyes they seemed dead. Three others, however, were quarrelling barbarously away forward; and one big fellow, half naked, with herculean shoulders, was hanging limply over a winch; another, sitting on the deck, his knees up and his head drooping sideways in a girlish attitude, was plaiting his pigtail with infinite languor depicted in his whole person and in the very movement of his fingers. The smoke struggled with difficulty out of the funnel, and instead of streaming away spread itself out like an infernal sort of cloud, smelling of sulphur and raining soot all over the decks.`,
     ``)
+  </script>
+  <script id="695" type="text/x-typescript" pinned="">
+    typhoon.s9 = {desc: "Jukes and McWhirr on deck", start: 61, end: 70}
+    display(md`###### —s9— ${typhoon.s9.desc}`)
   </script>
   <script id="106" type="text/x-typescript">
     mkCell(display,61,2,
@@ -720,6 +787,10 @@
     `When Jukes came out of the chart-room, the cast of his countenance had changed to thoughtfulness and concern. He caught hold of the bridge-rail and stared ahead.`,
     ``)
   </script>
+  <script id="696" type="text/x-typescript" pinned="">
+    typhoon.s10 = {desc: "Engine Room and Engineer", start: 71, end: 75}
+    display(md`###### —s10— ${typhoon.s10.desc}`)
+  </script>
   <script id="116" type="text/x-typescript">
     mkCell(display,71,3,
     `The temperature in the engine-room had gone up to a hundred and seventeen degrees. Irritated voices were ascending through the skylight and through the fiddle of the stokehold in a harsh and resonant uproar, mingled with angry clangs and scrapes of metal, as if men with limbs of iron and throats of bronze had been quarrelling down there. The second engineer was falling foul of the stokers for letting the steam go down. He was a man with arms like a blacksmith, and generally feared; but that afternoon the stokers were answering him back recklessly, and slammed the furnace doors with the fury of despair. Then the noise ceased suddenly, and the second engineer appeared, emerging out of the stokehold streaked with grime and soaking wet like a chimney-sweep coming out of a well. As soon as his head was clear of the fiddle he began to scold Jukes for not trimming properly the stokehold ventilators; and in answer Jukes made with his hands deprecatory soothing signs meaning: “No wind — can’t be helped — you can see for yourself.” But the other wouldn’t hear reason. His teeth flashed angrily in his dirty face. He didn’t mind, he said, the trouble of punching their blanked heads down there, blank his soul, but did the condemned sailors think you could keep steam up in the God-forsaken boilers simply by knocking the blanked stokers about? No, by George! You had to get some draught, too — may he be everlastingly blanked for a swab-headed deck-hand if you didn’t! And the chief, too, rampaging before the steam-gauge and carrying on like a lunatic up and down the engine-room ever since noon. What did Jukes think he was stuck up there for, if he couldn’t get one of his decayed, good-for-nothing deck-cripples to turn the ventilators to the wind?`,
@@ -744,6 +815,10 @@
     mkCell(display,75,4,
     `The word “barometer” seemed to revive the second engineer’s mad animosity. Collecting afresh all his energies, he directed Jukes in a low and brutal tone to shove the unmentionable instrument down his gory throat. Who cared for his crimson barometer? It was the steam — the steam — that was going down; and what between the firemen going faint and the chief going silly, it was worse than a dog’s life for him; he didn’t care a tinker’s curse how soon the whole show was blown out of the water. He seemed on the point of having a cry, but after regaining his breath he muttered darkly, “I’ll faint them,” and dashed off. He stopped upon the fiddle long enough to shake his fist at the unnatural daylight, and dropped into the dark hole with a whoop.`,
     ``)
+  </script>
+  <script id="697" type="text/x-typescript" pinned="">
+    typhoon.s11 = {desc: "Jukes and McWhirr: differences", start: 76, end: 85}
+    display(md`###### —s11— ${typhoon.s11.desc}`)
   </script>
   <script id="121" type="text/x-typescript">
     mkCell(display,76,3,
@@ -795,6 +870,10 @@
     `And Jukes, incorrigible, thought: “Goodness me! Somebody’s put a new inside to my old man. Here’s temper, if you like. Of course it’s the weather; what else? It would make an angel quarrelsome — let alone a saint.”`,
     ``)
   </script>
+  <script id="698" type="text/x-typescript" pinned="">
+    typhoon.s12 = {desc: "Inklings of the storm", start: 86, end: 93}
+    display(md`###### —s12— ${typhoon.s12.desc}`)
+  </script>
   <script id="131" type="text/x-typescript">
     mkCell(display,86,3,
     `All the Chinamen on deck appeared at their last gasp.`,
@@ -834,6 +913,10 @@
     mkCell(display,93,4,
     `“Shut the door, Mr. Jukes, will you?” he cried from within.`,
     ``)
+  </script>
+  <script id="699" type="text/x-typescript" pinned="">
+    typhoon.s13 = {desc: "Second Mate refusals", start: 94, end: 112}
+    display(md`###### —s13— ${typhoon.s13.desc}`)
   </script>
   <script id="139" type="text/x-typescript">
     mkCell(display,94,3,
@@ -929,6 +1012,10 @@
     mkCell(display,112,3,
     `“Aye, to me! That’s no great trick. **I am nobody, and well I know it**.”`,
     `The exchange between Jukes and the second mate here presages the worse than nothing that the second mate becomes both during the storm and after.`)
+  </script>
+  <script id="700" type="text/x-typescript" pinned="">
+    typhoon.s14 = {desc: "Jukes and McWhirr: what’s coming for whom", start: 113, end: 134}
+    display(md`###### —s14— ${typhoon.s14.desc}`)
   </script>
   <script id="158" type="text/x-typescript">
     mkCell(display,113,5,
@@ -1040,6 +1127,10 @@
     `“Maybe. I suppose you have a notion I should be getting out of the way of that dirt,” said Captain MacWhirr, speaking with the utmost simplicity of manner and tone, and fixing the oilcloth on the floor with a heavy stare. Thus he noticed neither Jukes’ discomfiture nor the mixture of vexation and astonished respect on his face.`,
     ``)
   </script>
+  <script id="701" type="text/x-typescript" pinned="">
+    typhoon.s15 = {desc: "Against (not by) the book", start: 135, end: 147}
+    display(md`###### —s15— ${typhoon.s15.desc}`)
+  </script>
   <script id="180" type="text/x-typescript">
     mkCell(display,135,4,
     `“Now, here’s this book,” he continued with deliberation, slapping his thigh with the closed volume. “I’ve been reading the chapter on the storms there.”`,
@@ -1104,6 +1195,10 @@
     mkCell(display,147,5,
     `“A gale is a gale, Mr. Jukes,” resumed the Captain, “and a full-powered steam-ship has got to face it. There’s just so much dirty weather knocking about the world, and the proper thing is to go through it with none of what old Captain Wilson of the Melita calls ‘storm strategy.’ The other day ashore I heard him hold forth about it to a lot of shipmasters who came in and sat at a table next to mine. It seemed to me the greatest nonsense. He was telling them how he outmanoeuvred, I think he said, a terrific gale, so that it never came nearer than fifty miles to him. A neat piece of head-work he called it. How he knew there was a terrific gale fifty miles off beats me altogether. It was like listening to a crazy man. I would have thought Captain Wilson was old enough to know better.”`,
     ``)
+  </script>
+  <script id="702" type="text/x-typescript" pinned="">
+    typhoon.s16 = {desc: "Gale becomes gale", start: 148, end: 161}
+    display(md`###### —s16— ${typhoon.s16.desc}`)
   </script>
   <script id="193" type="text/x-typescript">
     mkCell(display,148,4,
@@ -1174,6 +1269,10 @@
     mkCell(display,161,9,
     `As soon as he attempted to open the door the wind caught it. Clinging to the handle, he was dragged out over the doorstep, and at once found himself engaged with the wind in a sort of personal scuffle whose object was the shutting of that door. At the last moment a tongue of air scurried in and licked out the flame of the lamp.`,
     ``)
+  </script>
+  <script id="703" type="text/x-typescript" pinned="">
+    typhoon.s17 = {desc: "The stars disappear", start: 162, end: 177}
+    display(md`###### —s17— ${typhoon.s17.desc}`)
   </script>
   <script id="207" type="text/x-typescript">
     mkCell(display,162,9,
@@ -1257,7 +1356,7 @@
   </script>
   <script id="682" type="text/x-typescript">
     typhoon.c2 = {text: "III", start: 178, end: 229}
-    display(md`### III`)
+    display(md`---\n### III`)
   </script>
   <script id="224" type="text/x-typescript">
     mkCell(display,178,9,
@@ -3051,13 +3150,17 @@
       }
 
       function longestParagraph(paras) {
-        return paras.reduce((longest, p) =>
-          wordCount(p) > wordCount(longest) ? p : longest, paras[0]);
+        return paras.reduce(
+          (longest, p) => (wordCount(p) > wordCount(longest) ? p : longest),
+          paras[0],
+        );
       }
 
       function shortestParagraph(paras) {
-        return paras.reduce((shortest, p) =>
-          wordCount(p) < wordCount(shortest) ? p : shortest, paras[0]);
+        return paras.reduce(
+          (shortest, p) => (wordCount(p) < wordCount(shortest) ? p : shortest),
+          paras[0],
+        );
       }
 
       // Public API — returned object
@@ -3069,27 +3172,28 @@
         averageWordsPerParagraph: avgWordsPerPara(paragraphs),
         longestParagraph: {
           preview: longestParagraph(paragraphs).slice(0, 120) + "…",
-          words: wordCount(longestParagraph(paragraphs))
+          words: wordCount(longestParagraph(paragraphs)),
         },
         shortestParagraph: {
           preview: shortestParagraph(paragraphs).slice(0, 120),
-          words: wordCount(shortestParagraph(paragraphs))
+          words: wordCount(shortestParagraph(paragraphs)),
         },
         getSection(n) {
           // Returns the nth "chapter" block (Roman numeral markers)
           const romanNumerals = ["I", "II", "III", "IV", "V", "VI"];
           const marker = romanNumerals[n - 1];
-          const idx = paragraphs.findIndex(p => p.trim() === marker);
+          const idx = paragraphs.findIndex((p) => p.trim() === marker);
           if (idx === -1) return null;
-          const nextIdx = romanNumerals
-            .slice(n)
-            .reduce((found, r) => {
-              if (found !== -1) return found;
-              const i = paragraphs.findIndex(p => p.trim() === r);
-              return i > idx ? i : -1;
-            }, -1);
-          return paragraphs.slice(idx + 1, nextIdx === -1 ? undefined : nextIdx);
-        }
+          const nextIdx = romanNumerals.slice(n).reduce((found, r) => {
+            if (found !== -1) return found;
+            const i = paragraphs.findIndex((p) => p.trim() === r);
+            return i > idx ? i : -1;
+          }, -1);
+          return paragraphs.slice(
+            idx + 1,
+            nextIdx === -1 ? undefined : nextIdx,
+          );
+        },
       };
     })();
 
@@ -3097,36 +3201,61 @@
   </script>
   <script id="585" type="module" pinned="">
     // Demonstrate the IIFE's public API
-    display(html`<div style="font-family: monospace; line-height: 1.8; padding: 1em; background: #f8f8f8; border-left: 4px solid steelblue;">
-      <h3 style="font-family: sans-serif; margin-top:0">📦 IIFE — <code>typhoonSummary</code></h3>
-      <b>Title:</b> ${typhoonSummary.title}<br>
-      <b>Total characters:</b> ${typhoonSummary.totalCharacters.toLocaleString()}<br>
-      <b>Total words:</b> ${typhoonSummary.totalWords.toLocaleString()}<br>
-      <b>Total paragraphs:</b> ${typhoonSummary.totalParagraphs}<br>
-      <b>Avg words / paragraph:</b> ${typhoonSummary.averageWordsPerParagraph}<br>
-      <hr>
-      <b>Longest paragraph</b> (${typhoonSummary.longestParagraph.words} words):<br>
-      <i style="color:#555">"${typhoonSummary.longestParagraph.preview}"</i><br>
-      <hr>
-      <b>Shortest paragraph</b> (${typhoonSummary.shortestParagraph.words} word):<br>
-      <i style="color:#555">"${typhoonSummary.shortestParagraph.preview}"</i><br>
-      <hr>
-      <b>Section II paragraph count:</b> ${typhoonSummary.getSection(2).length}<br>
-      <b>Section III paragraph count:</b> ${typhoonSummary.getSection(3).length}<br>
-      <b>Section VI paragraph count:</b> ${typhoonSummary.getSection(6).length}
-    </div>`);
+    display(
+      html`<div
+        style="font-family: monospace; line-height: 1.8; padding: 1em; background: #f8f8f8; border-left: 4px solid steelblue;"
+      >
+        <h3 style="font-family: sans-serif; margin-top:0">
+          📦 IIFE — <code>typhoonSummary</code>
+        </h3>
+        <b>Title:</b> ${typhoonSummary.title}<br />
+        <b>Total characters:</b>
+        ${typhoonSummary.totalCharacters.toLocaleString()}<br />
+        <b>Total words:</b> ${typhoonSummary.totalWords.toLocaleString()}<br />
+        <b>Total paragraphs:</b> ${typhoonSummary.totalParagraphs}<br />
+        <b>Avg words / paragraph:</b>
+        ${typhoonSummary.averageWordsPerParagraph}<br />
+        <hr />
+        <b>Longest paragraph</b> (${typhoonSummary.longestParagraph.words}
+        words):<br />
+        <i style="color:#555">"${typhoonSummary.longestParagraph.preview}"</i
+        ><br />
+        <hr />
+        <b>Shortest paragraph</b> (${typhoonSummary.shortestParagraph.words}
+        word):<br />
+        <i style="color:#555">"${typhoonSummary.shortestParagraph.preview}"</i
+        ><br />
+        <hr />
+        <b>Section II paragraph count:</b> ${typhoonSummary.getSection(2)
+          .length}<br />
+        <b>Section III paragraph count:</b> ${typhoonSummary.getSection(3)
+          .length}<br />
+        <b>Section VI paragraph count:</b> ${typhoonSummary.getSection(6)
+          .length}
+      </div>`,
+    );
   </script>
   <script id="610" type="module" pinned="">
     // Inspect what's available on RiTa
-    display(Object.getOwnPropertyNames(RiTa).filter(k => typeof RiTa[k] === 'function'))
+    display(
+      Object.getOwnPropertyNames(RiTa).filter(
+        (k) => typeof RiTa[k] === "function",
+      ),
+    );
   </script>
   <script id="678" type="module" pinned="">
     // Check for duplicate paragraph keys in typhoon
-    const allKeys = Object.keys(typhoon).filter(k => isParagraphKey(k));
-    const nums = allKeys.map(k => paragraphNumberFromKey(k)).sort((a,b) => a-b);
+    const allKeys = Object.keys(typhoon).filter((k) => isParagraphKey(k));
+    const nums = allKeys
+      .map((k) => paragraphNumberFromKey(k))
+      .sort((a, b) => a - b);
     const dupes = nums.filter((n, i) => nums.indexOf(n) !== i);
     display(`Total paragraph keys: ${allKeys.length}`);
-    display(`Duplicate paragraph numbers: ${dupes.length ? dupes.join(", ") : "none"}`);
-    display(`Last 10 keys in insertion order: ${allKeys.slice(-10).join(", ")}`);
+    display(
+      `Duplicate paragraph numbers: ${dupes.length ? dupes.join(", ") : "none"}`,
+    );
+    display(
+      `Last 10 keys in insertion order: ${allKeys.slice(-10).join(", ")}`,
+    );
   </script>
 </notebook>
