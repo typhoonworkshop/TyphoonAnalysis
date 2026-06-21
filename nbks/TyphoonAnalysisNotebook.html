@@ -20,6 +20,7 @@
   </script>
   <script id="42" type="text/x-typescript" pinned="">
     const typhoon = {};
+    const actors = {mcwhirr: {}, jukes: {}, rout: {}, mate2: {}, workers: {}, crew: {}, owners: {}}
   </script>
   <script id="681" type="text/x-typescript" pinned="">
     // Paragraph key migration helpers: canonical form is now the numeric string ("0", "1", ...).
@@ -50,6 +51,7 @@
     function getParagraph(source: Record<string, any>, ref: number | string) {
       const canonical = paragraphKey(ref);
       return source[canonical] ?? source[`p${canonical}`];
+    goCell();
     }
   </script>
   <script id="39" type="text/x-typescript">
@@ -117,11 +119,52 @@
   <script id="680" type="text/x-typescript" pinned="">
     function mkCell(out: function, pnum: number, beaufort: number, txt: string, commentary: string) {
       typhoon[paragraphKey(pnum)] = {text:txt,bf:beaufort,cm:commentary}
-      out(md`##### ${pnum}`)
+      out(md`##### ${pnum}<a id="p${pnum}"></a>`)
       out(md`###### bf${beaufort}`)
       out(md`${txt}`)
       if (commentary) out(md`> *${commentary}*`)
     }
+  </script>
+  <script id="704" type="text/x-typescript" pinned="">
+    function goCell(pnum) {
+      const jumpToParagraph = (num) => {
+        const n = Number(num);
+        if (!Number.isInteger(n) || n < 1) return;
+        const id = "p" + n;
+        const target = document.getElementById(id);
+        if (!target) {
+          alert("Paragraph " + n + " not found.");
+          return;
+        }
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      const installShortcut = () => {
+        if (window.__goCellShortcutInstalled) return;
+        window.__goCellShortcutInstalled = true;
+
+        window.addEventListener("keydown", (event) => {
+          if (event.metaKey && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "j") {
+            event.preventDefault();
+            const input = prompt("Go to paragraph number:");
+            if (input === null) return;
+            jumpToParagraph(input.trim());
+          }
+        });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", installShortcut, { once: true });
+      } else {
+        installShortcut();
+      }
+
+      if (pnum !== undefined && pnum !== null && pnum !== "") {
+        jumpToParagraph(pnum);
+      }
+    }
+
+    goCell();
   </script>
   <script id="683" type="text/markdown">
     ---
@@ -391,7 +434,7 @@
   <script id="43" type="text/x-typescript">
     typhoon.c0 = {text: "I", start: 0, end: 58}
     display(md`---\n### I`)
-    typhoon.s0 = {desc: "MacWhirr’s Background", start: 0, end: 5}
+    typhoon.s0 = {desc: "MacWhirr’s Background", start: 0, end: 5, actors: ["mcwhirr"]}
     display(md`###### —s0— ${typhoon.s0.desc}`)
   </script>
   <script id="44" type="text/x-typescript">
@@ -425,7 +468,7 @@
     ``)
   </script>
   <script id="684" type="text/x-typescript" pinned="">
-    typhoon.s1 = {desc: "MacWhirr Low Pressure", start: 6, end: 21}
+    typhoon.s1 = {desc: "MacWhirr Low Pressure", start: 6, end: 20, actors: ["mcwhirr","workers","jukes","owners"]}
     display(md`###### —s1— ${typhoon.s1.desc}`)
   </script>
   <script id="50" type="text/x-typescript">
@@ -504,7 +547,7 @@
     ``)
   </script>
   <script id="685" type="text/x-typescript" pinned="">
-    typhoon.s2 = {desc: "Flag Controversy", start: 21, end: 33}
+    typhoon.s2 = {desc: "Flag Controversy", start: 21, end: 33, actors: ["mcwhirr","jukes","rout"]}
     display(md`###### —s2— ${typhoon.s2.desc}`)
   </script>
   <script id="65" type="text/x-typescript">
@@ -573,7 +616,7 @@
     `The exchange is set off by Jukes remarking that the flag is “queer” to “sail* under” *[my emphasis] but MacWhirr hears only that there is something wrong with the flag itself. He cannot imagine anything prejudicial that might be inappropriate concerning the ship or crew’s relations to the flag. We, however, read, very clearly, the extra-commercial prejudice in what is, for Jukes, a preposition that is loaded with respect to governance (the military-adjacent goverance of the merchant marine), geopolitics, culture, and, all too likely, race. When MacWhirr stolidly checks and asserts that the flag has “nothing amiss” with it, Jukes does not articulate the motivation for his prejudicial outbursts; his words simply, if sharply, query MacWhirr’s findings. Jukes’ unspoken meaning is read by us in his “jerking” behavior as he “viciously” performs a minor task. Then, Jukes’ final outburst is forceful enough to cause all heads to turn. It is MacWhirr who has, entirely unwittingly, articulated the underlying tenor of the exchange, from Jukes’ point of view. Once again, we can read the meaning that Jukes, and most others, would impute to the Union Jack having been replaced by an elephant that “stands for something” else, but MacWhirr does not even seem to* choose *to ignore this meaning. Conrad expresses, brilliantly, what is at stake in this exchange, and in a manner that one imagines would be very difficult for a model to achieve, since what Conrad does is so much concerned with what is* not *expressed in the text or its tokens.`)
   </script>
   <script id="687" type="text/x-typescript" pinned="">
-    typhoon.s3 = {desc: "Chief Engineer Rout", start: 34, end: 38}
+    typhoon.s3 = {desc: "Chief Engineer Rout", start: 34, end: 38, actors: ["jukes","rout"]}
     display(md`###### —s3— ${typhoon.s3.desc}`)
   </script>
   <script id="78" type="text/x-typescript">
@@ -602,7 +645,7 @@
     ``)
   </script>
   <script id="689" type="text/x-typescript" pinned="">
-    typhoon.s4 = {desc: "Accommodation of the Chinese Workers", start: 39, end: 45}
+    typhoon.s4 = {desc: "Accommodation of the Chinese Workers", start: 39, end: 45, actors: ["mcwhirr","workers","jukes"]}
     display(md`###### —s4— ${typhoon.s4.desc}`)
   </script>
   <script id="83" type="text/x-typescript">
@@ -641,7 +684,7 @@
     `The ascription of “gentle and refined melancholy” to the Bun Hin* (萬興) *company’s clerk argues for the narrative’s distinct structure of prejudice, relative to that of certain characters’ with it.`)
   </script>
   <script id="690" type="text/x-typescript" pinned="">
-    typhoon.s5 = {desc: "McWhirr’s Letters Home", start: 46, end: 49}
+    typhoon.s5 = {desc: "McWhirr’s Letters Home", start: 46, end: 49, actors: ["mcwhirr"]}
     display(md`###### —s5— ${typhoon.s5.desc}`)
   </script>
   <script id="90" type="text/x-typescript">
@@ -665,7 +708,7 @@
     `The “wonderful persistence” of fine weather, in MacWhirr’s exceptionally monotonous letters to his wife, is a looming irony.`)
   </script>
   <script id="692" type="text/x-typescript" pinned="">
-    typhoon.s6 = {desc: "Rout’s Letters Home", start: 50, end: 53}
+    typhoon.s6 = {desc: "Rout’s Letters Home", start: 50, end: 53, actors: ["rout"]}
     display(md`###### —s6— ${typhoon.s6.desc}`)
   </script>
   <script id="94" type="text/x-typescript">
@@ -689,7 +732,7 @@
     ``)
   </script>
   <script id="693" type="text/x-typescript" pinned="">
-    typhoon.s7 = {desc: "Jukes’ Letters Home", start: 54, end: 58}
+    typhoon.s7 = {desc: "Jukes’ Letters Home", start: 54, end: 58, actors: ["jukes"]}
     display(md`###### —s7— ${typhoon.s7.desc}`)
   </script>
   <script id="98" type="text/x-typescript">
@@ -1276,7 +1319,7 @@
   </script>
   <script id="207" type="text/x-typescript">
     mkCell(display,162,9,
-    `Ahead of the ship he perceived a great darkness lying upon a multitude of white flashes; on the starboard beam a few amazing stars drooped, dim and fitful, above an immense waste of broken seas, as if seen through a mad drift of smoke.`,
+    `Ahead of the ship he perceived a **great darkness lying upon a multitude of white flashes**; on the starboard beam a few amazing stars drooped, dim and fitful, above an **immense waste of broken seas**, as if seen through a **mad drift of smoke**.`,
     ``)
   </script>
   <script id="208" type="text/x-typescript">
@@ -1341,7 +1384,7 @@
   </script>
   <script id="220" type="text/x-typescript">
     mkCell(display,175,10,
-    `A plunge of the ship ended in a shock as if she had landed her forefoot upon something solid. After a moment of stillness a lofty flight of sprays drove hard with the wind upon their faces.`,
+    `A **plunge of the ship** ended in a shock as if she had landed her forefoot upon something solid. After a moment of stillness a **lofty flight of sprays** **drove hard with the wind** upon their faces.`,
     ``)
   </script>
   <script id="221" type="text/x-typescript">
@@ -1357,10 +1400,12 @@
   <script id="682" type="text/x-typescript">
     typhoon.c2 = {text: "III", start: 178, end: 229}
     display(md`---\n### III`)
+    typhoon.s18 = {desc: "No joke", start: 178, end: 184}
+    display(md`###### —s18— ${typhoon.s18.desc}`)
   </script>
   <script id="224" type="text/x-typescript">
     mkCell(display,178,9,
-    `Jukes was as ready a man as any half-dozen young mates that may be caught by casting a net upon the waters; and though he had been somewhat taken aback by the startling viciousness of the first squall, he had pulled himself together on the instant, had called out the hands and had rushed them along to secure such openings about the deck as had not been already battened down earlier in the evening. Shouting in his fresh, stentorian voice, “Jump, boys, and bear a hand!” he led in the work, telling himself the while that he had “just expected this.”`,
+    `Jukes was as ready a man as any half-dozen young mates that may be caught by casting a net upon the waters; and though he had been somewhat taken aback by the **startling viciousness of the first squall**, he had pulled himself together on the instant, had called out the hands and had rushed them along to secure such openings about the deck as had not been already battened down earlier in the evening. Shouting in his fresh, stentorian voice, “Jump, boys, and bear a hand!” he led in the work, telling himself the while that he had “just expected this.”`,
     ``)
   </script>
   <script id="225" type="text/x-typescript">
