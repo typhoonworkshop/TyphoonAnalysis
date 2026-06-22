@@ -20,7 +20,7 @@
   </script>
   <script id="42" type="text/x-typescript" pinned="">
     const typhoon = {};
-    const actors = {mcwhirr: {}, jukes: {}, rout: {}, mate2: {}, workers: {}, crew: {}, owners: {}}
+    const actors = {mcwhirr: {}, jukes: {}, rout: {}, mate2: {}, workers: {}, deckcrew: {}, owners: {}, engineroom: {}}
   </script>
   <script id="681" type="text/x-typescript" pinned="">
     // Paragraph key migration helpers: canonical form is now the numeric string ("0", "1", ...).
@@ -760,10 +760,10 @@
     `He had expressed his honest opinion. It was not worthwhile trying to impress a man of that sort. If the world had been full of such men, life would have probably appeared to Jukes an unentertaining and unprofitable business. He was not alone in his opinion. The sea itself, as if sharing Mr. Jukes’ good-natured forbearance, had never put itself out to startle the silent man, who seldom looked up, and wandered innocently over the waters with the only visible purpose of getting food, raiment, and house-room for three people ashore. Dirty weather he had known, of course. He had been made wet, uncomfortable, tired in the usual way, felt at the time and presently forgotten. So that upon the whole he had been justified in reporting fine weather at home. But he had never been given a glimpse of immeasurable strength and of immoderate wrath, the wrath that passes exhausted but never appeased — the wrath and fury of the passionate sea. He knew it existed, as we know that crime and abominations exist; he had heard of it as a peaceable citizen in a town hears of battles, famines, and floods, and yet knows nothing of what these things mean — though, indeed, he may have been mixed up in a street row, have gone without his dinner once, or been soaked to the skin in a shower. Captain MacWhirr had sailed over the surface of the oceans as some men go skimming over the years of existence to sink gently into a placid grave, ignorant of life to the last, without ever having been made to see all it may contain of perfidy, of violence, and of terror. There are on sea and land such men thus fortunate — or thus disdained by destiny or by the sea.`,
     ``)
   </script>
-  <script id="103" type="text/x-typescript">
+  <script id="103" type="text/x-typescript" pinned="">
     typhoon.c1 = {text: "II", start: 59, end: 177}
     display(md`---\n### II`)
-    typhoon.s8 = {desc: "Fall of the Barometer", start: 59, end: 64}
+    typhoon.s8 = {desc: "Fall of the Barometer", start: 59, end: 64, actors: ["mcwhirr"]}
     display(md`###### —s8— ${typhoon.s8.desc}`)
   </script>
   <script id="104" type="text/x-typescript">
@@ -777,7 +777,7 @@
     ``)
   </script>
   <script id="695" type="text/x-typescript" pinned="">
-    typhoon.s9 = {desc: "Jukes and McWhirr on deck", start: 61, end: 70}
+    typhoon.s9 = {desc: "Jukes and McWhirr on deck", start: 61, end: 70, actors: ["mcwhirr", "jukes"]}
     display(md`###### —s9— ${typhoon.s9.desc}`)
   </script>
   <script id="106" type="text/x-typescript">
@@ -831,7 +831,7 @@
     ``)
   </script>
   <script id="696" type="text/x-typescript" pinned="">
-    typhoon.s10 = {desc: "Engine Room and Engineer", start: 71, end: 75}
+    typhoon.s10 = {desc: "Engine Room and Engineer", start: 71, end: 75, actors: ["jukes","rout","engineroom"]}
     display(md`###### —s10— ${typhoon.s10.desc}`)
   </script>
   <script id="116" type="text/x-typescript">
@@ -860,7 +860,7 @@
     ``)
   </script>
   <script id="697" type="text/x-typescript" pinned="">
-    typhoon.s11 = {desc: "Jukes and McWhirr: differences", start: 76, end: 85}
+    typhoon.s11 = {desc: "Jukes and McWhirr: differences", start: 76, end: 85, actors: ["mcwhirr", "jukes"]}
     display(md`###### —s11— ${typhoon.s11.desc}`)
   </script>
   <script id="121" type="text/x-typescript">
@@ -914,7 +914,7 @@
     ``)
   </script>
   <script id="698" type="text/x-typescript" pinned="">
-    typhoon.s12 = {desc: "Inklings of the storm", start: 86, end: 93}
+    typhoon.s12 = {desc: "Inklings of the storm", start: 86, end: 93, actors: ["workers", "jukes"]}
     display(md`###### —s12— ${typhoon.s12.desc}`)
   </script>
   <script id="131" type="text/x-typescript">
@@ -924,7 +924,7 @@
   </script>
   <script id="132" type="text/x-typescript">
     mkCell(display,87,1,
-    `At its setting the sun had a diminished diameter and an expiring brown, rayless glow, as if millions of centuries elapsing since the morning had brought it near its end. A dense bank of cloud became visible to the northward; it had a sinister dark olive tint, and lay low and motionless upon the sea, resembling a solid obstacle in the path of the ship. She went floundering towards it like an exhausted creature driven to its death. The coppery twilight retired slowly, and the darkness brought out overhead a swarm of unsteady, big stars, that, as if blown upon, flickered exceedingly and seemed to hang very near the earth. At eight o’clock Jukes went into the chart-room to write up the ship’s log.`,
+    `At its setting **the sun had a diminished diameter** and **an expiring brown, rayless glow**, as if millions of centuries elapsing since the morning had brought it near its end. A dense bank of cloud became visible to the northward; it had **a sinister dark olive tint**, and lay **low and motionless upon the sea**, resembling a solid obstacle in the path of the ship. She went floundering towards it like an exhausted creature driven to its death. The coppery twilight retired slowly, and the darkness brought out overhead a swarm of unsteady, big stars, that, as if blown upon, flickered exceedingly and seemed to hang very near the earth. At eight o’clock Jukes went into the chart-room to write up the ship’s log.`,
     ``)
   </script>
   <script id="133" type="text/x-typescript">
@@ -958,7 +958,7 @@
     ``)
   </script>
   <script id="699" type="text/x-typescript" pinned="">
-    typhoon.s13 = {desc: "Second Mate refusals", start: 94, end: 112}
+    typhoon.s13 = {desc: "Second Mate refusals", start: 94, end: 112, actors: ["jukes", "mate2"]}
     display(md`###### —s13— ${typhoon.s13.desc}`)
   </script>
   <script id="139" type="text/x-typescript">
@@ -1057,7 +1057,7 @@
     `The exchange between Jukes and the second mate here presages the worse than nothing that the second mate becomes both during the storm and after.`)
   </script>
   <script id="700" type="text/x-typescript" pinned="">
-    typhoon.s14 = {desc: "Jukes and McWhirr: what’s coming for whom", start: 113, end: 134}
+    typhoon.s14 = {desc: "Jukes and McWhirr: what’s coming for whom", start: 113, end: 134, actors: ["mcwhirr", "jukes", "workers"]}
     display(md`###### —s14— ${typhoon.s14.desc}`)
   </script>
   <script id="158" type="text/x-typescript">
@@ -1171,7 +1171,7 @@
     ``)
   </script>
   <script id="701" type="text/x-typescript" pinned="">
-    typhoon.s15 = {desc: "Against (not by) the book", start: 135, end: 147}
+    typhoon.s15 = {desc: "Against (not by) the book", start: 135, end: 147, actors: ["mcwhirr", "jukes"]}
     display(md`###### —s15— ${typhoon.s15.desc}`)
   </script>
   <script id="180" type="text/x-typescript">
@@ -1240,7 +1240,7 @@
     ``)
   </script>
   <script id="702" type="text/x-typescript" pinned="">
-    typhoon.s16 = {desc: "Gale becomes gale", start: 148, end: 161}
+    typhoon.s16 = {desc: "Gale becomes gale", start: 148, end: 161, actors: ["mcwhirr", "jukes"]}
     display(md`###### —s16— ${typhoon.s16.desc}`)
   </script>
   <script id="193" type="text/x-typescript">
@@ -1314,7 +1314,7 @@
     ``)
   </script>
   <script id="703" type="text/x-typescript" pinned="">
-    typhoon.s17 = {desc: "The stars disappear", start: 162, end: 177}
+    typhoon.s17 = {desc: "The stars disappear", start: 162, end: 177, actors: ["mcwhirr", "jukes"]}
     display(md`###### —s17— ${typhoon.s17.desc}`)
   </script>
   <script id="207" type="text/x-typescript">
@@ -1397,10 +1397,10 @@
     `Before Jukes had squeezed the salt water out of his eyes all the stars had disappeared.`,
     ``)
   </script>
-  <script id="682" type="text/x-typescript">
+  <script id="682" type="text/x-typescript" pinned="">
     typhoon.c2 = {text: "III", start: 178, end: 229}
     display(md`---\n### III`)
-    typhoon.s18 = {desc: "No joke", start: 178, end: 184}
+    typhoon.s18 = {desc: "No joke", start: 178, end: 184, actors: ["mcwhirr", "jukes"]}
     display(md`###### —s18— ${typhoon.s18.desc}`)
   </script>
   <script id="224" type="text/x-typescript">
@@ -1438,6 +1438,10 @@
     `It was something formidable and swift, like **the sudden smashing of a vial of wrath**. It seemed to explode all round the ship with **an overpowering concussion** and a rush of great waters, as if an immense dam had been blown up to windward. In an instant the men lost touch of each other. This is **the disintegrating power of a great wind**: it isolates one from one’s kind. An earthquake, a landslip, an avalanche, overtake a man incidentally, as it were — without passion. A **furious gale attacks him like a personal enemy**, tries to grasp his limbs, fastens upon his mind, seeks to rout his very spirit out of him.`,
     ``)
   </script>
+  <script id="705" type="text/x-typescript" pinned="">
+    typhoon.s19 = {desc: "Precariously alone", start: 185, end: 186, actors: ["jukes"]}
+    display(md`###### —s19— ${typhoon.s19.desc}`)
+  </script>
   <script id="231" type="text/x-typescript">
     mkCell(display,185,11,
     `Jukes was driven away from his commander. He fancied himself whirled a great distance through the air. Everything disappeared — even, for a moment, his power of thinking; but his hand had found one of the rail-stanchions. His distress was by no means alleviated by an inclination to disbelieve the reality of this experience. Though young, he had seen some bad weather, and had never doubted his ability to imagine the worst; but this was so much beyond his powers of fancy that it appeared incompatible with the existence of any ship whatever. He would have been incredulous about himself in the same way, perhaps, had he not been so harassed by the necessity of exerting a wrestling effort against a force trying to tear him away from his hold. Moreover, the conviction of not being utterly destroyed returned to him through the sensations of being half-drowned, bestially shaken, and partly choked.`,
@@ -1447,6 +1451,10 @@
     mkCell(display,186,12,
     `It seemed to him he remained there precariously alone with the stanchion for a long, long time. The rain poured on him, flowed, drove in sheets. He breathed in gasps; and sometimes the water he swallowed was fresh and sometimes it was salt. For the most part he kept his eyes shut tight, as if suspecting his sight might be destroyed in the immense flurry of the elements. When he ventured to blink hastily, he derived some moral support from the green gleam of the starboard light shining feebly upon the flight of rain and sprays. He was actually looking at it when its ray fell upon the uprearing sea which put it out. He saw the head of the wave topple over, adding the mite of its crash to the tremendous uproar raging around him, and almost at the same instant the stanchion was wrenched away from his embracing arms. After a crushing thump on his back he found himself suddenly afloat and borne upwards. His first irresistible notion was that **the whole China Sea had climbed on the bridge**. Then, more sanely, he concluded himself gone overboard. All the time he was being **tossed, flung, and rolled in great volumes of water**, he kept on repeating mentally, with the utmost precipitation, the words: “My God! My God! My God! My God!”`,
     ``)
+  </script>
+  <script id="706" type="text/x-typescript" pinned="">
+    typhoon.s20 = {desc: "Somehow mixed up", start: 187, end: 204, actors: ["mcwhirr", "jukes"]}
+    display(md`###### —s20— ${typhoon.s20.desc}`)
   </script>
   <script id="233" type="text/x-typescript">
     mkCell(display,187,11,
@@ -1538,6 +1546,10 @@
     `And Jukes heard the voice of his commander hardly any louder than before, but nearer, as though, starting to march athwart the prodigious rush of the hurricane, it had approached him, bearing that strange effect of quietness like the serene glow of a halo.`,
     `The “strange effect” is the “quietness” of language, of MacWhirr’s voice, “like the serene glow of a halo.” …`)
   </script>
+  <script id="707" type="text/x-typescript" pinned="">
+    typhoon.s21 = {desc: "Where are the hands?", start: 205, end: 212, actors: ["mcwhirr", "jukes"]}
+    display(md`###### —s21— ${typhoon.s21.desc}`)
+  </script>
   <script id="251" type="text/x-typescript">
     mkCell(display,205,10,
     `“D’ye know where the hands got to?” it asked, vigorous and evanescent at the same time, overcoming the strength of the wind, and swept away from Jukes instantly.`,
@@ -1577,6 +1589,10 @@
     mkCell(display,212,11,
     `The seas in the dark seemed to rush from all sides to keep her back where she might perish. There was **hate in the way she was handled**, and a **ferocity in the blows that fell**. She was like a living creature thrown to the rage of a mob: **hustled terribly**, **struck at**, **borne up**, **flung down**, **leaped upon**. Captain MacWhirr and Jukes kept hold of each other, **deafened by the noise**, **gagged by the wind**; and the great physical tumult beating about their bodies, brought, like an unbridled display of passion, a profound trouble to their souls. One of those wild and **appalling shrieks** that are heard at times passing mysteriously overhead **in the steady roar of a hurricane**, swooped, as if borne on wings, upon the ship, and Jukes **tried to outscream it**.`,
     ``)
+  </script>
+  <script id="708" type="text/x-typescript" pinned="">
+    typhoon.s22 = {desc: "Will she live through this?", start: 213, end: 213, actors: ["mcwhirr", "jukes"]}
+    display(md`###### —s22— ${typhoon.s22.desc}`)
   </script>
   <script id="259" type="text/x-typescript">
     mkCell(display,213,11,
