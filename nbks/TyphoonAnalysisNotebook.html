@@ -20,7 +20,7 @@
   </script>
   <script id="42" type="text/x-typescript" pinned="">
     const typhoon = {};
-    const actors = {mcwhirr: {}, jukes: {}, rout: {}, mate2: {}, boatswain: {}, helmsman: {}, workers: {}, deckhands: {}, owners: {}, engineroom: {}}
+    const actors = {macwhirr: {}, jukes: {}, rout: {}, mate2: {}, boatswain: {}, helmsman: {}, workers: {}, deckhands: {}, owners: {}, engineroom: {}}
   </script>
   <script id="681" type="text/x-typescript" pinned="">
     // Paragraph key migration helpers: canonical form is now the numeric string ("0", "1", ...).
@@ -51,7 +51,6 @@
     function getParagraph(source: Record<string, any>, ref: number | string) {
       const canonical = paragraphKey(ref);
       return source[canonical] ?? source[`p${canonical}`];
-    goCell();
     }
   </script>
   <script id="39" type="text/x-typescript">
@@ -128,7 +127,7 @@
   <script id="718" type="text/x-typescript" pinned="">
     function mkSec(out: function, snum: number, _desc: string, _start: number, _end: number, _actors: []) {
       typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors};
-      out(md`###### —s${snum}— ${_desc}`)
+      out(md`###### —s${snum}— ${_desc} ${typhoon[`s${snum}`].start}-${typhoon[`s${snum}`].end}`)
     }
   </script>
   <script id="704" type="text/x-typescript" pinned="">
@@ -474,8 +473,7 @@
   <script id="43" type="text/x-typescript">
     typhoon.c0 = {text: "I", start: 0, end: 58}
     display(md`---\n### I`)
-    typhoon.s0 = {desc: "MacWhirr’s Background", start: 0, end: 5, actors: ["mcwhirr"]}
-    display(md`###### —s0— ${typhoon.s0.desc}`)
+    mkSec(display, 0, "MacWhirr’s Background", 0, 5, ["macwhirr"])
   </script>
   <script id="44" type="text/x-typescript">
     mkCell(display,0,2,
@@ -507,9 +505,8 @@
     `The great day of MacWhirr’s marriage came in due course, following shortly upon the great day when he got his first command.`,
     ``)
   </script>
-  <script id="684" type="text/x-typescript" pinned="">
-    typhoon.s1 = {desc: "MacWhirr Low Pressure", start: 6, end: 20, actors: ["mcwhirr","workers","jukes","owners"]}
-    display(md`###### —s1— ${typhoon.s1.desc}`)
+  <script id="684" type="text/x-typescript">
+    mkSec(display, 1, "MacWhirr Low Pressure", 6, 20, ["macwhirr","workers","jukes","owners"])
   </script>
   <script id="50" type="text/x-typescript">
     mkCell(display,6,3,
@@ -586,11 +583,10 @@
     `Old Mr. Sigg liked a man of few words, and one that “you could be sure would not try to improve upon his instructions.” MacWhirr satisfying these requirements, was continued in command of the Nan-Shan, and applied himself to the careful navigation of his ship in the China seas. She had come out on a British register, but after some time Messrs. Sigg judged it expedient to transfer her to the Siamese flag.`,
     ``)
   </script>
-  <script id="685" type="text/x-typescript" pinned="">
-    typhoon.s2 = {desc: "Flag Controversy", start: 21, end: 33, actors: ["mcwhirr","jukes","rout"]}
-    display(md`###### —s2— ${typhoon.s2.desc}`)
+  <script id="744" type="text/x-typescript">
+    mkSec(display, 2, "Flag Controversy", 21, 33, ["macwhirr", "jukes", "rout"])
   </script>
-  <script id="65" type="text/x-typescript">
+  <script id="685" type="text/x-typescript">
     mkCell(display,21,2,
     `At the news of the contemplated transfer Jukes grew restless, as if under a sense of personal affront. He went about grumbling to himself, and uttering short scornful laughs. “Fancy having a ridiculous Noah’s Ark elephant in the ensign of one’s ship,” he said once at the engine-room door. “Dash me if I can stand it: I’ll throw up the billet. Don’t it make you sick, Mr. Rout?” The chief engineer only cleared his throat with the air of a man who knows the value of a good billet.`,
     ``)
@@ -655,9 +651,8 @@
     `“Does it!” yelled Jukes, so that every head on the Nan-Shan’s decks looked towards the bridge. Then he sighed, and with sudden resignation: “It would certainly be a dam’ distressful sight,” he said, meekly.`,
     `The exchange is set off by Jukes remarking that the flag is “queer” to “sail* under” *[my emphasis] but MacWhirr hears only that there is something wrong with the flag itself. He cannot imagine anything prejudicial that might be inappropriate concerning the ship or crew’s relations to the flag. We, however, read, very clearly, the extra-commercial prejudice in what is, for Jukes, a preposition that is loaded with respect to governance (the military-adjacent goverance of the merchant marine), geopolitics, culture, and, all too likely, race. When MacWhirr stolidly checks and asserts that the flag has “nothing amiss” with it, Jukes does not articulate the motivation for his prejudicial outbursts; his words simply, if sharply, query MacWhirr’s findings. Jukes’ unspoken meaning is read by us in his “jerking” behavior as he “viciously” performs a minor task. Then, Jukes’ final outburst is forceful enough to cause all heads to turn. It is MacWhirr who has, entirely unwittingly, articulated the underlying tenor of the exchange, from Jukes’ point of view. Once again, we can read the meaning that Jukes, and most others, would impute to the Union Jack having been replaced by an elephant that “stands for something” else, but MacWhirr does not even seem to* choose *to ignore this meaning. Conrad expresses, brilliantly, what is at stake in this exchange, and in a manner that one imagines would be very difficult for a model to achieve, since what Conrad does is so much concerned with what is* not *expressed in the text or its tokens.`)
   </script>
-  <script id="687" type="text/x-typescript" pinned="">
-    typhoon.s3 = {desc: "Chief Engineer Rout", start: 34, end: 38, actors: ["jukes","rout"]}
-    display(md`###### —s3— ${typhoon.s3.desc}`)
+  <script id="687" type="text/x-typescript">
+    mkSec(display, 3, "Chief Engineer Rout", 34, 38, ["jukes","rout"])
   </script>
   <script id="78" type="text/x-typescript">
     mkCell(display,34,2,
@@ -684,9 +679,8 @@
     `“No,” cried Jukes, raising a weary, discouraged voice above the harsh buzz of the Nan-Shan’s friction winches. All of them were hard at work, snatching slings of cargo, high up, to the end of long derricks, only, as it seemed, to let them rip down recklessly by the run. The cargo chains groaned in the gins, clinked on coamings, rattled over the side; and the whole ship quivered, with her long gray flanks smoking in wreaths of steam. “No,” cried Jukes, “I didn’t. What’s the good? I might just as well fling my resignation at this bulkhead. I don’t believe you can make a man like that understand anything. He simply knocks me over.”`,
     ``)
   </script>
-  <script id="689" type="text/x-typescript" pinned="">
-    typhoon.s4 = {desc: "Accommodation of the Chinese Workers", start: 39, end: 45, actors: ["mcwhirr","workers","jukes"]}
-    display(md`###### —s4— ${typhoon.s4.desc}`)
+  <script id="689" type="text/x-typescript">
+    mkSec(display, 4, "Accommodation of the Chinese Workers", 39, 45, ["macwhirr","workers","jukes"])
   </script>
   <script id="83" type="text/x-typescript">
     mkCell(display,39,2,
@@ -723,11 +717,10 @@
     `With his mouth and hands he made exuberant motions of eating rice and washing clothes; and the Chinaman, who concealed his distrust of this pantomime under a collected demeanour tinged by a gentle and refined melancholy, glanced out of his almond eyes from Jukes to the hatch and back again. “Velly good,” he murmured, in a disconsolate undertone, and hastened smoothly along the decks, dodging obstacles in his course. He disappeared, ducking low under a sling of ten dirty gunny-bags full of some costly merchandise and exhaling a repulsive smell.`,
     `The ascription of “gentle and refined melancholy” to the Bun Hin* (萬興) *company’s clerk argues for the narrative’s distinct structure of prejudice, relative to that of certain characters’ with it.`)
   </script>
-  <script id="690" type="text/x-typescript" pinned="">
-    typhoon.s5 = {desc: "McWhirr’s Letters Home", start: 46, end: 49, actors: ["mcwhirr"]}
-    display(md`###### —s5— ${typhoon.s5.desc}`)
+  <script id="745" type="text/x-typescript">
+    mkSec(display, 5, "McWhirr’s Letters Home", 46, 49, ["macwhirr"])
   </script>
-  <script id="90" type="text/x-typescript">
+  <script id="690" type="text/x-typescript">
     mkCell(display,46,2,
     `Captain MacWhirr meantime had gone on the bridge, and into the chart-room, where a letter, commenced two days before, awaited termination. These long letters began with the words, “My darling wife,” and the steward, between the scrubbing of the floors and the dusting of chronometer-boxes, snatched at every opportunity to read them. They interested him much more than they possibly could the woman for whose eye they were intended; and this for the reason that they related in minute detail each successive trip of the Nan-Shan.`,
     ``)
@@ -747,11 +740,10 @@
     `The China seas north and south are narrow seas. They are seas full of every-day, eloquent facts, such as islands, sand-banks, reefs, swift and changeable currents — tangled facts that nevertheless speak to a seaman in clear and definite language. Their speech appealed to Captain MacWhirr’s sense of realities so forcibly that he had given up his state-room below and practically lived all his days on the bridge of his ship, often having his meals sent up, and sleeping at night in the chart-room. And he indited there his home letters. Each of them, without exception, contained the phrase, “The weather has been very fine this trip,” or some other form of a statement to that effect. And this statement, too, in its wonderful persistence, was of the same perfect accuracy as all the others they contained.`,
     `The “wonderful persistence” of fine weather, in MacWhirr’s exceptionally monotonous letters to his wife, is a looming irony.`)
   </script>
-  <script id="692" type="text/x-typescript" pinned="">
-    typhoon.s6 = {desc: "Rout’s Letters Home", start: 50, end: 53, actors: ["rout"]}
-    display(md`###### —s6— ${typhoon.s6.desc}`)
+  <script id="746" type="text/x-typescript">
+    mkSec(display, 6, "Rout’s Letters Home", 50, 53, ["rout"])
   </script>
-  <script id="94" type="text/x-typescript">
+  <script id="692" type="text/x-typescript">
     mkCell(display,50,3,
     `Mr. Rout likewise wrote letters; only no one on board knew how chatty he could be pen in hand, because the chief engineer had enough imagination to keep his desk locked. His wife relished his style greatly. They were a childless couple, and Mrs. Rout, a big, high-bosomed, jolly woman of forty, shared with Mr. Rout’s toothless and venerable mother a little cottage near Teddington. She would run over her correspondence, at breakfast, with lively eyes, and scream out interesting passages in a joyous voice at the deaf old lady, prefacing each extract by the warning shout, “Solomon says!” She had the trick of firing off Solomon’s utterances also upon strangers, astonishing them easily by the unfamiliar text and the unexpectedly jocular vein of these quotations. On the day the new curate called for the first time at the cottage, she found occasion to remark, “As Solomon says: ‘the engineers that go down to the sea in ships behold the wonders of sailor nature’;” when a change in the visitor’s countenance made her stop and stare.`,
     ``)
@@ -771,11 +763,10 @@
     `“For my part,” Solomon was reported by his wife to have said once, “give me the dullest ass for a skipper before a rogue. There is a way to take a fool; but a rogue is smart and slippery.” This was an airy generalization drawn from the particular case of Captain MacWhirr’s honesty, which, in itself, had the heavy obviousness of a lump of clay. On the other hand, Mr. Jukes, unable to generalize, unmarried, and unengaged, was in the habit of opening his heart after another fashion to an old chum and former shipmate, actually serving as second officer on board an Atlantic liner.`,
     ``)
   </script>
-  <script id="693" type="text/x-typescript" pinned="">
-    typhoon.s7 = {desc: "Jukes’ Letters Home", start: 54, end: 58, actors: ["jukes"]}
-    display(md`###### —s7— ${typhoon.s7.desc}`)
+  <script id="748" type="text/x-typescript">
+    mkSec(display, 7, "Jukes’ letters home", 54, 58, ["jukes"])
   </script>
-  <script id="98" type="text/x-typescript">
+  <script id="693" type="text/x-typescript">
     mkCell(display,54,3,
     `First of all he would insist upon the advantages of the Eastern trade, hinting at its superiority to the Western ocean service. He extolled the sky, the seas, the ships, and the easy life of the Far East. The Nan-Shan, he affirmed, was second to none as a sea-boat.`,
     ``)
@@ -800,11 +791,10 @@
     `He had expressed his honest opinion. It was not worthwhile trying to impress a man of that sort. If the world had been full of such men, life would have probably appeared to Jukes an unentertaining and unprofitable business. He was not alone in his opinion. The sea itself, as if sharing Mr. Jukes’ good-natured forbearance, had never put itself out to startle the silent man, who seldom looked up, and wandered innocently over the waters with the only visible purpose of getting food, raiment, and house-room for three people ashore. Dirty weather he had known, of course. He had been made wet, uncomfortable, tired in the usual way, felt at the time and presently forgotten. So that upon the whole he had been justified in reporting fine weather at home. But he had never been given a glimpse of immeasurable strength and of immoderate wrath, the wrath that passes exhausted but never appeased — the wrath and fury of the passionate sea. He knew it existed, as we know that crime and abominations exist; he had heard of it as a peaceable citizen in a town hears of battles, famines, and floods, and yet knows nothing of what these things mean — though, indeed, he may have been mixed up in a street row, have gone without his dinner once, or been soaked to the skin in a shower. Captain MacWhirr had sailed over the surface of the oceans as some men go skimming over the years of existence to sink gently into a placid grave, ignorant of life to the last, without ever having been made to see all it may contain of perfidy, of violence, and of terror. There are on sea and land such men thus fortunate — or thus disdained by destiny or by the sea.`,
     ``)
   </script>
-  <script id="103" type="text/x-typescript" pinned="">
+  <script id="103" type="text/x-typescript">
     typhoon.c1 = {text: "II", start: 59, end: 177}
     display(md`---\n### II`)
-    typhoon.s8 = {desc: "Fall of the Barometer", start: 59, end: 64, actors: ["mcwhirr"]}
-    display(md`###### —s8— ${typhoon.s8.desc}`)
+    mkSec(display, 8, "Fall of the Barometer", 59, 60, ["macwhirr"])
   </script>
   <script id="104" type="text/x-typescript">
     mkCell(display,59,2,
@@ -816,11 +806,10 @@
     `The Nan-Shan was ploughing a vanishing furrow upon the circle of the sea that had the surface and the shimmer of an undulating piece of gray silk. The sun, pale and without rays, poured down leaden heat in a strangely indecisive light, and the Chinamen were lying prostrate about the decks. Their bloodless, pinched, yellow faces were like the faces of bilious invalids. Captain MacWhirr noticed two of them especially, stretched out on their backs below the bridge. As soon as they had closed their eyes they seemed dead. Three others, however, were quarrelling barbarously away forward; and one big fellow, half naked, with herculean shoulders, was hanging limply over a winch; another, sitting on the deck, his knees up and his head drooping sideways in a girlish attitude, was plaiting his pigtail with infinite languor depicted in his whole person and in the very movement of his fingers. The smoke struggled with difficulty out of the funnel, and instead of streaming away spread itself out like an infernal sort of cloud, smelling of sulphur and raining soot all over the decks.`,
     ``)
   </script>
-  <script id="695" type="text/x-typescript" pinned="">
-    typhoon.s9 = {desc: "Jukes and McWhirr on deck", start: 61, end: 70, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s9— ${typhoon.s9.desc}`)
+  <script id="749" type="text/x-typescript">
+    mkSec(display, 9, "Jukes and McWhirr on deck", 61, 70, ["macwhirr", "jukes"])
   </script>
-  <script id="106" type="text/x-typescript">
+  <script id="695" type="text/x-typescript">
     mkCell(display,61,2,
     `“What the devil are you doing there, Mr. Jukes?” asked Captain MacWhirr.`,
     ``)
@@ -870,9 +859,8 @@
     `When Jukes came out of the chart-room, the cast of his countenance had changed to thoughtfulness and concern. He caught hold of the bridge-rail and stared ahead.`,
     ``)
   </script>
-  <script id="696" type="text/x-typescript" pinned="">
-    typhoon.s10 = {desc: "Engine Room and Engineer", start: 71, end: 75, actors: ["jukes","rout","engineroom"]}
-    display(md`###### —s10— ${typhoon.s10.desc}`)
+  <script id="696" type="text/x-typescript">
+    mkSec(display, 10, "Engine Room and Engineer", 71, 75, ["jukes","rout","engineroom"])
   </script>
   <script id="116" type="text/x-typescript">
     mkCell(display,71,3,
@@ -899,9 +887,8 @@
     `The word “barometer” seemed to revive the second engineer’s mad animosity. Collecting afresh all his energies, he directed Jukes in a low and brutal tone to shove the unmentionable instrument down his gory throat. Who cared for his crimson barometer? It was the steam — the steam — that was going down; and what between the firemen going faint and the chief going silly, it was worse than a dog’s life for him; he didn’t care a tinker’s curse how soon the whole show was blown out of the water. He seemed on the point of having a cry, but after regaining his breath he muttered darkly, “I’ll faint them,” and dashed off. He stopped upon the fiddle long enough to shake his fist at the unnatural daylight, and dropped into the dark hole with a whoop.`,
     ``)
   </script>
-  <script id="697" type="text/x-typescript" pinned="">
-    typhoon.s11 = {desc: "Jukes and McWhirr: differences", start: 76, end: 85, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s11— ${typhoon.s11.desc}`)
+  <script id="697" type="text/x-typescript">
+    mkSec(display, 11, "Jukes and MacWhirr: differences", 76, 85, ["macwhirr", "jukes"])
   </script>
   <script id="121" type="text/x-typescript">
     mkCell(display,76,3,
@@ -953,9 +940,8 @@
     `And Jukes, incorrigible, thought: “Goodness me! Somebody’s put a new inside to my old man. Here’s temper, if you like. Of course it’s the weather; what else? It would make an angel quarrelsome — let alone a saint.”`,
     ``)
   </script>
-  <script id="698" type="text/x-typescript" pinned="">
-    typhoon.s12 = {desc: "Inklings of the storm", start: 86, end: 93, actors: ["workers", "jukes"]}
-    display(md`###### —s12— ${typhoon.s12.desc}`)
+  <script id="698" type="text/x-typescript">
+    mkSec(display, 12, "Inklings of the storm", 86, 93, ["workers", "jukes"])
   </script>
   <script id="131" type="text/x-typescript">
     mkCell(display,86,3,
@@ -997,9 +983,8 @@
     `“Shut the door, Mr. Jukes, will you?” he cried from within.`,
     ``)
   </script>
-  <script id="699" type="text/x-typescript" pinned="">
-    typhoon.s13 = {desc: "Second Mate refusals", start: 94, end: 112, actors: ["jukes", "mate2"]}
-    display(md`###### —s13— ${typhoon.s13.desc}`)
+  <script id="699" type="text/x-typescript">
+    mkSec(display, 13, "Second Mate refusals", 94, 112, ["jukes", "mate2"])
   </script>
   <script id="139" type="text/x-typescript">
     mkCell(display,94,3,
@@ -1096,11 +1081,10 @@
     `“Aye, to me! That’s no great trick. **I am nobody, and well I know it**.”`,
     `The exchange between Jukes and the second mate here presages the worse than nothing that the second mate becomes both during the storm and after.`)
   </script>
-  <script id="700" type="text/x-typescript" pinned="">
-    typhoon.s14 = {desc: "Jukes and McWhirr: what’s coming for whom", start: 113, end: 134, actors: ["mcwhirr", "jukes", "workers"]}
-    display(md`###### —s14— ${typhoon.s14.desc}`)
+  <script id="750" type="text/x-typescript">
+    mkSec(display, 14, "Jukes and McWhirr: what’s coming for whom", 113, 134, ["macwhirr", "jukes", "workers"])
   </script>
-  <script id="158" type="text/x-typescript">
+  <script id="700" type="text/x-typescript">
     mkCell(display,113,5,
     `The ship, after a pause of comparative steadiness, started upon a series of rolls, one worse than the other, and for a time Jukes, preserving his equilibrium, was too busy to open his mouth. As soon as the violent swinging had quieted down somewhat, he said: “This is a bit too much of a good thing. Whether anything is coming or not I think she ought to be put head on to that swell. The old man is just gone in to lie down. Hang me if I don’t speak to him.”`,
     ``)
@@ -1210,9 +1194,8 @@
     `“Maybe. I suppose you have a notion I should be getting out of the way of that dirt,” said Captain MacWhirr, speaking with the utmost simplicity of manner and tone, and fixing the oilcloth on the floor with a heavy stare. Thus he noticed neither Jukes’ discomfiture nor the mixture of vexation and astonished respect on his face.`,
     ``)
   </script>
-  <script id="701" type="text/x-typescript" pinned="">
-    typhoon.s15 = {desc: "Against (not by) the book", start: 135, end: 147, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s15— ${typhoon.s15.desc}`)
+  <script id="701" type="text/x-typescript">
+    mkSec(display, 15, "Against (not by) the book", 135, 147, ["macwhirr", "jukes"])
   </script>
   <script id="180" type="text/x-typescript">
     mkCell(display,135,4,
@@ -1279,11 +1262,10 @@
     `“A gale is a gale, Mr. Jukes,” resumed the Captain, “and a full-powered steam-ship has got to face it. There’s just so much dirty weather knocking about the world, and the proper thing is to go through it with none of what old Captain Wilson of the Melita calls ‘storm strategy.’ The other day ashore I heard him hold forth about it to a lot of shipmasters who came in and sat at a table next to mine. It seemed to me the greatest nonsense. He was telling them how he outmanoeuvred, I think he said, a terrific gale, so that it never came nearer than fifty miles to him. A neat piece of head-work he called it. How he knew there was a terrific gale fifty miles off beats me altogether. It was like listening to a crazy man. I would have thought Captain Wilson was old enough to know better.”`,
     ``)
   </script>
-  <script id="702" type="text/x-typescript" pinned="">
-    typhoon.s16 = {desc: "Gale becomes gale", start: 148, end: 161, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s16— ${typhoon.s16.desc}`)
+  <script id="752" type="text/x-typescript">
+    mkSec(display, 16, "Gale becomes gale", 148, 161, ["macwhirr", "jukes"])
   </script>
-  <script id="193" type="text/x-typescript">
+  <script id="702" type="text/x-typescript">
     mkCell(display,148,4,
     `Captain MacWhirr ceased for a moment, then said, “It’s your watch below, Mr. Jukes?”`,
     ``)
@@ -1353,9 +1335,8 @@
     `As soon as he attempted to open the door the wind caught it. Clinging to the handle, he was dragged out over the doorstep, and at once found himself engaged with the wind in a sort of personal scuffle whose object was the shutting of that door. At the last moment a tongue of air scurried in and licked out the flame of the lamp.`,
     ``)
   </script>
-  <script id="703" type="text/x-typescript" pinned="">
-    typhoon.s17 = {desc: "The stars disappear", start: 162, end: 177, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s17— ${typhoon.s17.desc}`)
+  <script id="703" type="text/x-typescript">
+    mkSec(display, 17, "The stars disappear", 162, 177, ["macwhirr", "jukes"])
   </script>
   <script id="207" type="text/x-typescript">
     mkCell(display,162,9,
@@ -1437,11 +1418,10 @@
     `Before Jukes had squeezed the salt water out of his eyes all the stars had disappeared.`,
     ``)
   </script>
-  <script id="682" type="text/x-typescript" pinned="">
+  <script id="682" type="text/x-typescript">
     typhoon.c2 = {text: "III", start: 178, end: 229}
     display(md`---\n### III`)
-    typhoon.s18 = {desc: "No joke", start: 178, end: 184, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s18— ${typhoon.s18.desc}`)
+    mkSec(display, 18, "No joke", 178, 184, ["macwhirr", "jukes"])
   </script>
   <script id="224" type="text/x-typescript">
     mkCell(display,178,9,
@@ -1478,9 +1458,8 @@
     `It was something formidable and swift, like **the sudden smashing of a vial of wrath**. It seemed to explode all round the ship with **an overpowering concussion** and a rush of great waters, as if an immense dam had been blown up to windward. In an instant the men lost touch of each other. This is **the disintegrating power of a great wind**: it isolates one from one’s kind. An earthquake, a landslip, an avalanche, overtake a man incidentally, as it were — without passion. A **furious gale attacks him like a personal enemy**, tries to grasp his limbs, fastens upon his mind, seeks to rout his very spirit out of him.`,
     ``)
   </script>
-  <script id="705" type="text/x-typescript" pinned="">
-    typhoon.s19 = {desc: "Precariously alone", start: 185, end: 186, actors: ["jukes"]}
-    display(md`###### —s19— ${typhoon.s19.desc}`)
+  <script id="705" type="text/x-typescript">
+    mkSec(display, 19, "Precariously alone", 185, 186, ["jukes"])
   </script>
   <script id="231" type="text/x-typescript">
     mkCell(display,185,11,
@@ -1492,9 +1471,8 @@
     `It seemed to him he remained there precariously alone with the stanchion for a long, long time. The rain poured on him, flowed, drove in sheets. He breathed in gasps; and sometimes the water he swallowed was fresh and sometimes it was salt. For the most part he kept his eyes shut tight, as if suspecting his sight might be destroyed in the immense flurry of the elements. When he ventured to blink hastily, he derived some moral support from the green gleam of the starboard light shining feebly upon the flight of rain and sprays. He was actually looking at it when its ray fell upon the uprearing sea which put it out. He saw the head of the wave topple over, adding the mite of its crash to the tremendous uproar raging around him, and almost at the same instant the stanchion was wrenched away from his embracing arms. After a crushing thump on his back he found himself suddenly afloat and borne upwards. His first irresistible notion was that **the whole China Sea had climbed on the bridge**. Then, more sanely, he concluded himself gone overboard. All the time he was being **tossed, flung, and rolled in great volumes of water**, he kept on repeating mentally, with the utmost precipitation, the words: “My God! My God! My God! My God!”`,
     ``)
   </script>
-  <script id="706" type="text/x-typescript" pinned="">
-    typhoon.s20 = {desc: "Somehow mixed up", start: 187, end: 204, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s20— ${typhoon.s20.desc}`)
+  <script id="706" type="text/x-typescript">
+    mkSec(display, 20, "Somehow mixed up", 187, 204, ["macwhirr", "jukes"])
   </script>
   <script id="233" type="text/x-typescript">
     mkCell(display,187,11,
@@ -1586,9 +1564,8 @@
     `And Jukes heard the voice of his commander hardly any louder than before, but nearer, as though, starting to march athwart the prodigious rush of the hurricane, it had approached him, bearing that strange effect of quietness like the serene glow of a halo.`,
     `The “strange effect” is the “quietness” of language, of MacWhirr’s voice, “like the serene glow of a halo.” …`)
   </script>
-  <script id="707" type="text/x-typescript" pinned="">
-    typhoon.s21 = {desc: "Where are the hands?", start: 205, end: 212, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s21— ${typhoon.s21.desc}`)
+  <script id="707" type="text/x-typescript">
+    mkSec(display, 21, "Where are the hands?", 205, 212, ["macwhirr", "jukes"])
   </script>
   <script id="251" type="text/x-typescript">
     mkCell(display,205,10,
@@ -1630,9 +1607,8 @@
     `The seas in the dark seemed to rush from all sides to keep her back where she might perish. There was **hate in the way she was handled**, and a **ferocity in the blows that fell**. She was like a living creature thrown to the rage of a mob: **hustled terribly**, **struck at**, **borne up**, **flung down**, **leaped upon**. Captain MacWhirr and Jukes kept hold of each other, **deafened by the noise**, **gagged by the wind**; and the great physical tumult beating about their bodies, brought, like an unbridled display of passion, a profound trouble to their souls. One of those wild and **appalling shrieks** that are heard at times passing mysteriously overhead **in the steady roar of a hurricane**, swooped, as if borne on wings, upon the ship, and Jukes **tried to outscream it**.`,
     ``)
   </script>
-  <script id="708" type="text/x-typescript" pinned="">
-    typhoon.s22 = {desc: "Will she live through this?", start: 213, end: 220, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s22— ${typhoon.s22.desc}`)
+  <script id="708" type="text/x-typescript">
+    mkSec(display, 22, "Will she live through this?", 213, 220, ["macwhirr", "jukes"])
   </script>
   <script id="259" type="text/x-typescript">
     mkCell(display,213,11,
@@ -1674,9 +1650,8 @@
     `“Keep on hammering … builders … good men …. And chance it … engines … Rout … good man.”`,
     ``)
   </script>
-  <script id="709" type="text/x-typescript" pinned="">
-    typhoon.s23 = {desc: "Boatswain and report", start: 221, end: 231, actors: ["mcwhirr", "jukes", "boatswain", "workers"]}
-    display(md`###### —s23— ${typhoon.s23.desc}`)
+  <script id="709" type="text/x-typescript">
+    mkSec(display, 23, "Boatswain and report", 221, 231, ["macwhirr", "jukes", "boatswain", "workers"])
   </script>
   <script id="267" type="text/x-typescript">
     mkCell(display,221,10,
@@ -1737,9 +1712,8 @@
     `Jukes to leeward could hear these two shouting within six inches of his face, as you may hear on a still night half a mile away two men conversing across a field. He heard Captain MacWhirr’s exasperated “What? What?” and the strained pitch of the other’s hoarseness. “***In a lump*** … seen them myself … ***Awful sight, sir*** … thought … tell you.”`,
     ``)
   </script>
-  <script id="710" type="text/x-typescript" pinned="">
-    typhoon.s24 = {desc: "Jukes stunned", start: 232, end: 235, actors: ["jukes"]}
-    display(md`###### —s24— ${typhoon.s24.desc}`)
+  <script id="710" type="text/x-typescript">
+    mkSec(display, 24, "Jukes stunned", 232, 235, ["jukes"])
   </script>
   <script id="279" type="text/x-typescript">
     mkCell(display,232,9,
@@ -1761,9 +1735,8 @@
     `Jukes was *benumbed* much more than he supposed. He held on — very wet, very cold, stiff in every limb; and in a momentary hallucination of swift visions (it is said that a drowning man thus reviews all his life) he beheld all sorts of memories altogether unconnected with his present situation. He remembered his father, for instance: a worthy business man, who at an unfortunate crisis in his affairs went quietly to bed and died forthwith in a state of resignation. Jukes did not recall these circumstances, of course, but remaining otherwise unconcerned he seemed to see distinctly the poor man’s face; a certain game of nap played when quite a boy in Table Bay on board a ship, since lost with all hands; the thick eyebrows of his first skipper; and without any emotion, as he might years ago have walked listlessly into her room and found her sitting there with a book, he remembered his mother — dead, too, now — the resolute woman, left badly off, who had been very firm in his bringing up.`,
     ``)
   </script>
-  <script id="711" type="text/x-typescript" pinned="">
-    typhoon.s25 = {desc: "Jukes’ order", start: 236, end: 243, actors: ["mcwhirr", "jukes"]}
-    display(md`###### —s25— ${typhoon.s25.desc}`)
+  <script id="711" type="text/x-typescript">
+    mkSec(display, 25, "Jukes’ order", 236, 243, ["macwhirr", "jukes"])
   </script>
   <script id="283" type="text/x-typescript">
     mkCell(display,236,9,
@@ -1805,9 +1778,8 @@
     `Captain MacWhirr had his mate’s head fixed firm in the crook of his elbow, and pressed it to his yelling lips mysteriously. Sometimes Jukes would break in, admonishing hastily: “Look out, sir!” or Captain MacWhirr would bawl an earnest exhortation to “Hold hard, there!” and **the whole black universe seemed to reel** together with the ship. They paused. She floated yet. And Captain MacWhirr would resume, his shouts. “ … Says … whole lot … fetched away … Ought to see … what’s the matter.”`,
     ``)
   </script>
-  <script id="712" type="text/x-typescript" pinned="">
-    typhoon.s26 = {desc: "Boatswain and deckhands", start: 244, end: 249, actors: ["boatswain", "deckhands"]}
-    display(md`###### —s26— ${typhoon.s26.desc}`)
+  <script id="712" type="text/x-typescript">
+    mkSec(display, 26, "Boatswain and deckhands", 244, 249, ["boatswain", "deckhands"])
   </script>
   <script id="291" type="text/x-typescript">
     mkCell(display,244,10,
@@ -1839,9 +1811,8 @@
     `Somebody told him to go and put his head in a bag. He regretted he could not recognize the voice, and that it was too dark to see, otherwise, as he said, he would have put a head on that son of a sea-cook, anyway, sink or swim. Nevertheless, he had made up his mind to show them he could get a light, if he were to die for it.`,
     ``)
   </script>
-  <script id="713" type="text/x-typescript" pinned="">
-    typhoon.s27 = {desc: "Boatswain and tweendeck", start: 250, end: 257, actors: ["boatswain", "workers"]}
-    display(md`###### —s27— ${typhoon.s27.desc}`)
+  <script id="713" type="text/x-typescript">
+    mkSec(display, 27, "Boatswain and tweendeck", 250, 257, ["boatswain", "workers"])
   </script>
   <script id="297" type="text/x-typescript">
     mkCell(display,250,9,
@@ -1883,9 +1854,8 @@
     `“Good Lord!” he cried, horrified, and banged-to the iron door upon this vision.`,
     ``)
   </script>
-  <script id="714" type="text/x-typescript" pinned="">
-    typhoon.s28 = {desc: "Boatswain goes to bridge", start: 258, end: 262, actors: ["boatswain", "deckhands", "mate2"]}
-    display(md`###### —s28— ${typhoon.s28.desc}`)
+  <script id="714" type="text/x-typescript">
+    mkSec(display, 28, "Boatswain goes to bridge", 258, 262, ["boatswain", "deckhands", "mate2"])
   </script>
   <script id="305" type="text/x-typescript">
     mkCell(display,258,9,
@@ -1912,9 +1882,8 @@
     `“Captain? Gone overboard, after getting us into this mess.” The mate, too, for all he knew or cared. Another fool. Didn’t matter. Everybody was going by-and-by.`,
     ``)
   </script>
-  <script id="715" type="text/x-typescript" pinned="">
-    typhoon.s29 = {desc: "Must see, Jukes ordered", start: 263, end: 276, actors: ["boatswain", "mcwhirr", "jukes"]}
-    display(md`###### —s29— ${typhoon.s29.desc}`)
+  <script id="715" type="text/x-typescript">
+    mkSec(display, 29, "Must see, Jukes ordered", 263, 276, ["boatswain", "macwhirr", "jukes"])
   </script>
   <script id="310" type="text/x-typescript">
     mkCell(display,263,9,
@@ -1986,9 +1955,8 @@
     `But the **wind devoured the reply**, out of which Jukes heard only the one word, pronounced with great energy “ … Always …”`,
     ``)
   </script>
-  <script id="716" type="text/x-typescript" pinned="">
-    typhoon.s30 = {desc: "Jukes’ departure", start: 277, end: 279, actors: ["boatswain", "mcwhirr", "jukes"]}
-    display(md`###### —s30— ${typhoon.s30.desc}`)
+  <script id="716" type="text/x-typescript">
+    mkSec(display, 30, "Jukes’ departure", 277, 279, ["boatswain", "macwhirr", "jukes"])
   </script>
   <script id="324" type="text/x-typescript">
     mkCell(display,277,10,
@@ -2005,11 +1973,10 @@
     `A sea swept over. Jukes understood the boatswain to splutter that the bridge ladders were gone. “I’ll lower you down, sir, by your hands,” he screamed. He shouted also something about the smoke-stack being as likely to go overboard as not. Jukes thought it very possible, and imagined the fires out, the ship helpless … The boatswain by his side kept on yelling. “What? What is it?” Jukes cried distressfully; and the other repeated, “What would my old woman say if she saw me now?”`,
     ``)
   </script>
-  <script id="717" type="text/x-typescript" pinned="">
-    let n="31"; typhoon[`s${n}`] = {desc: "Jukes’ departure", start: 280, end: 282, actors: ["jukes", "boatswain", "deckhands"]}
-    display(md`###### —s${n}— ${typhoon[`s${n}`].desc}`)
+  <script id="753" type="text/x-typescript">
+    mkSec(display, 31, "Jukes with boatswain and deckhands", 280, 282, ["jukes", "boatswain", "deckhands"])
   </script>
-  <script id="327" type="text/x-typescript">
+  <script id="717" type="text/x-typescript">
     mkCell(display,280,9,
     `In the alleyway, where a lot of water had got in and splashed in the dark, the men were still as death, till Jukes stumbled against one of them and cursed him savagely for being in the way. Two or three voices then asked, eager and weak, “Any chance for us, sir?”`,
     ``)
@@ -2024,7 +1991,7 @@
     `The boatswain had some means, and made a point of alluding to them frequently. His wife — a fat woman — and two grown-up daughters kept a greengrocer’s shop in the East-end of London.`,
     ``)
   </script>
-  <script id="719" type="text/x-typescript" pinned="">
+  <script id="719" type="text/x-typescript">
     mkSec(display, 32, "Jukes in the tweendeck", 283, 289, ["jukes", "boatswain", "workers"])
   </script>
   <script id="330" type="text/x-typescript">
@@ -2062,8 +2029,8 @@
     `***The whole place seemed to twist upon itself***, jumping incessantly the while; and when the ship rose to a sea Jukes fancied that ***all these men would be shot upon him in a body***. He backed out, swung the door to, and with trembling hands pushed at the bolt …`,
     ``)
   </script>
-  <script id="720" type="text/x-typescript" pinned="">
-    mkSec(display, 33, "McWhirr alone on bridge", 290, 292, ["mcwhirr"])
+  <script id="720" type="text/x-typescript">
+    mkSec(display, 33, "MacWhirr alone on bridge", 290, 292, ["macwhirr"])
   </script>
   <script id="337" type="text/x-typescript">
     mkCell(display,290,9,
@@ -2080,8 +2047,8 @@
     `Captain MacWhirr wiped his eyes. The sea that had nearly taken him overboard had, to his great annoyance, washed his sou’-wester hat off his bald head. The fluffy, fair hair, soaked and darkened, resembled a mean skein of cotton threads festooned round his bare skull. His face, glistening with sea-water, had been made crimson with the wind, with the sting of sprays. He looked as though he had come off sweating from before a furnace.`,
     ``)
   </script>
-  <script id="721" type="text/x-typescript" pinned="">
-    mkSec(display, 34, "McWhirr and second mate", 293, 299, ["mcwhirr", "mate2"])
+  <script id="721" type="text/x-typescript">
+    mkSec(display, 34, "MacWhirr and second mate", 293, 299, ["macwhirr", "mate2"])
   </script>
   <script id="340" type="text/x-typescript">
     mkCell(display,293,9,
@@ -2118,8 +2085,8 @@
     `He took his face again between his fists.`,
     ``)
   </script>
-  <script id="722" type="text/x-typescript" pinned="">
-    mkSec(display, 35, "McWhirr and helmsman", 300, 305, ["mcwhirr", "helmsman"])
+  <script id="722" type="text/x-typescript">
+    mkSec(display, 35, "MacWhirr and helmsman", 300, 305, ["macwhirr", "helmsman"])
   </script>
   <script id="347" type="text/x-typescript">
     mkCell(display,300,9,
@@ -2151,8 +2118,8 @@
     `“Oh! aye! All right …” The Captain lifted his eyes for the first time to the man, “… Hackett.”`,
     ``)
   </script>
-  <script id="723" type="text/x-typescript" pinned="">
-    mkSec(display, 36, "McWhirr and Rout", 306, 323, ["mcwhirr", "rout"])
+  <script id="723" type="text/x-typescript">
+    mkSec(display, 36, "MacWhirr and Rout", 306, 323, ["macwhirr", "rout"])
   </script>
   <script id="353" type="text/x-typescript">
     mkCell(display,306,9,
@@ -2244,7 +2211,7 @@
     `“Gone crazy,” began the Captain’s voice suddenly in the tube. “Rushed at me … Just now. Had to knock him down … This minute. You heard, Mr. Rout?”`,
     ``)
   </script>
-  <script id="724" type="text/x-typescript" pinned="">
+  <script id="724" type="text/x-typescript">
     mkSec(display, 37, "Rout and Engineroom", 324, 329, ["rout", "engineroom"])
   </script>
   <script id="371" type="text/x-typescript">
@@ -2277,7 +2244,7 @@
     `The wood-encased bulk of the low-pressure cylinder, frowning portly from above, emitted a faint wheeze at every thrust, and except for that low hiss the engines worked their steel limbs headlong or slow with a silent, determined smoothness. And all this, the white walls, the moving steel, the floor plates under Solomon Rout’s feet, the floors of iron grating above his head, the dusk and the gleams, uprose and sank continuously, with one accord, upon **the harsh wash of the waves** against the ship’s side. The whole loftiness of the place, booming hollow to **the great voice of the wind**, swayed at the top like a tree, would go over bodily, as if borne down this way and that by the tremendous blasts.`,
     ``)
   </script>
-  <script id="725" type="text/x-typescript" pinned="">
+  <script id="725" type="text/x-typescript">
     mkSec(display, 38, "Rout and Jukes", 330, 339, ["rout", "jukes", "engineroom"])
   </script>
   <script id="377" type="text/x-typescript">
@@ -2330,8 +2297,8 @@
     `“You’ve got to hurry up, whatever it is.”`,
     ``)
   </script>
-  <script id="726" type="text/x-typescript" pinned="">
-    mkSec(display, 39, "Jukes reports engineroom to bridge", 340, 343, ["mcwhirr", "jukes", "workers"])
+  <script id="726" type="text/x-typescript">
+    mkSec(display, 39, "Jukes reports engineroom to bridge", 340, 343, ["macwhirr", "jukes", "workers"])
   </script>
   <script id="387" type="text/x-typescript">
     mkCell(display,340,11,
@@ -2353,10 +2320,10 @@
     `He sent up his words, tripping over each other, crowding the narrow tube. They mounted as if into a silence of an enlightened comprehension dwelling alone up there with a storm. And Jukes wanted to be dismissed from the face of that odious trouble intruding on the great need of the ship.`,
     ``)
   </script>
-  <script id="391" type="text/x-typescript" pinned="">
+  <script id="391" type="text/x-typescript">
     typhoon.c4 = {text: `V`, start: 344, end: 459}
     display(md`---\n### V`)
-    mkSec(display, 40, "Great wave", 344, 355, ["mcwhirr", "jukes", "rout", "engineroom"])
+    mkSec(display, 40, "Great wave", 344, 355, ["macwhirr", "jukes", "rout", "engineroom"])
   </script>
   <script id="392" type="text/x-typescript">
     mkCell(display,344,11,
@@ -2418,7 +2385,7 @@
     `At last she rose slowly, staggering, **as if she had to lift a mountain with her bows**.`,
     ``)
   </script>
-  <script id="727" type="text/x-typescript" pinned="">
+  <script id="727" type="text/x-typescript">
     mkSec(display, 41, "Wave aftermath", 356, 361, ["jukes", "rout", "engineroom"])
   </script>
   <script id="404" type="text/x-typescript">
@@ -2451,8 +2418,8 @@
     `“Now then, Beale!” cried Mr. Rout.`,
     ``)
   </script>
-  <script id="728" type="text/x-typescript" pinned="">
-    mkSec(display, 42, "Order: pick up the dollars", 362, 369, ["jukes", "mcwhirr", "rout", "engineroom"])
+  <script id="728" type="text/x-typescript">
+    mkSec(display, 42, "Order: pick up the dollars", 362, 369, ["jukes", "macwhirr", "rout", "engineroom"])
   </script>
   <script id="410" type="text/x-typescript">
     mkCell(display,362,12,
@@ -2494,7 +2461,7 @@
     `Jukes was climbing out frantically, and the other, lifting up his face after him, howled, “Can’t you speak? What are you poking about here for? What’s your game, anyhow?”`,
     ``)
   </script>
-  <script id="729" type="text/x-typescript" pinned="">
+  <script id="729" type="text/x-typescript">
     mkSec(display, 43, "Picking up the dollars", 370, 382, ["jukes", "boatswain", "deckhands", "workers"])
   </script>
   <script id="418" type="text/x-typescript">
@@ -2562,7 +2529,7 @@
     `They had been ranged closely, after having been shaken into submission, cuffed a little to allay excitement, addressed in gruff words of encouragement that sounded like promises of evil. They sat on the deck in ghastly, drooping rows, and at the end the carpenter, with two hands to help him, moved busily from place to place, setting taut and hitching the life-lines. The boatswain, with one leg and one arm embracing a stanchion, struggled with a lamp pressed to his breast, trying to get a light, and growling all the time like an industrious gorilla. The figures of seamen stooped repeatedly, with the movements of gleaners, and everything was being flung into the bunker: clothing, smashed wood, broken china, and the dollars, too, gathered up in men’s jackets. Now and then a sailor would stagger towards the doorway with his arms full of rubbish; and dolorous, slanting eyes followed his movements.`,
     ``)
   </script>
-  <script id="730" type="text/x-typescript" pinned="">
+  <script id="730" type="text/x-typescript">
     mkSec(display, 44, "The Chinese workers lament", 383, 386, ["jukes", "workers"])
   </script>
   <script id="431" type="text/x-typescript">
@@ -2585,7 +2552,7 @@
     `Two more started mouthing what seemed to Jukes fierce denunciations; the others stirred with grunts and growls. Jukes ordered the hands out of the ’tweendecks hurriedly. He left last himself, backing through the door, while the grunts rose to a loud murmur and hands were extended after him as after a malefactor. The boatswain shot the bolt, and remarked uneasily, “Seems as if the wind had dropped, sir.”`,
     ``)
   </script>
-  <script id="731" type="text/x-typescript" pinned="">
+  <script id="731" type="text/x-typescript">
     mkSec(display, 45, "Alleyway and deck", 387, 388, ["jukes", "deckhands"])
   </script>
   <script id="435" type="text/x-typescript">
@@ -2598,8 +2565,8 @@
     `Jukes on coming out of the alleyway found himself up to the neck in the noisy water. He gained the bridge, and discovered he could detect obscure shapes as if his sight had become preternaturally acute. He saw faint outlines. They recalled not the familiar aspect of the Nan-Shan, but something remembered — an old dismantled steamer he had seen years ago rotting on a mudbank. She recalled that wreck.`,
     ``)
   </script>
-  <script id="732" type="text/x-typescript" pinned="">
-    mkSec(display, 46, "There was no wind", 389, 407, ["mcwhirr", "jukes", "workers"])
+  <script id="732" type="text/x-typescript">
+    mkSec(display, 46, "There was no wind", 389, 407, ["macwhirr", "jukes", "workers"])
   </script>
   <script id="437" type="text/x-typescript">
     mkCell(display,389,0,
@@ -2696,7 +2663,7 @@
     `“Are you going off the deck, sir?” asked Jukes, hurriedly, as if the storm were sure to pounce upon him as soon as he had been left alone with the ship.`,
     ``)
   </script>
-  <script id="733" type="text/x-typescript" pinned="">
+  <script id="733" type="text/x-typescript">
     mkSec(display, 47, "Still core", 408, 408, ["jukes"])
   </script>
   <script id="456" type="text/x-typescript">
@@ -2704,8 +2671,8 @@
     `He watched her, battered and solitary, labouring heavily in a wild scene of mountainous black waters lit by the gleams of distant worlds. She moved slowly, breathing into the still core of the hurricane the excess of her strength in a white cloud of steam — and **the deep-toned vibration of the escape** was like the defiant trumpeting of a living creature of the sea impatient for the renewal of the contest. It ceased suddenly. The **still air moaned**. Above Jukes’ head **a few stars shone into a pit of black vapours**. **The inky edge of the cloud-disc frowned** upon the ship under the patch of glittering sky. The stars, too, seemed to look at her intently, as if for the last time, and the cluster of their splendour sat like a diadem on a lowering brow.`,
     ``)
   </script>
-  <script id="734" type="text/x-typescript" pinned="">
-    mkSec(display, 48, "It will be terrific", 409, 422, ["mcwhirr"])
+  <script id="734" type="text/x-typescript">
+    mkSec(display, 48, "It will be terrific", 409, 422, ["macwhirr"])
   </script>
   <script id="457" type="text/x-typescript">
     mkCell(display,409,2,
@@ -2777,8 +2744,8 @@
     `“She may come out of it yet.”`,
     ``)
   </script>
-  <script id="735" type="text/x-typescript" pinned="">
-    mkSec(display, 49, "Preparations on deck", 423, 454, ["mcwhirr", "jukes", "mate2", "helsman"])
+  <script id="735" type="text/x-typescript">
+    mkSec(display, 49, "Preparations on deck", 423, 454, ["macwhirr", "jukes", "mate2", "helsman"])
   </script>
   <script id="471" type="text/x-typescript">
     mkCell(display,423,2,
@@ -2940,8 +2907,8 @@
     `The ship laboured without intermission amongst **the black hills of water**, paying with this hard tumbling the price of her life. She rumbled in her depths, shaking a white plummet of steam into the night, and Jukes’ thought skimmed like a bird through the engine-room, where Mr. Rout — good man — was ready. When the rumbling ceased it seemed to him that there was a pause of every sound, a dead pause in which Captain MacWhirr’s voice rang out startlingly.`,
     ``)
   </script>
-  <script id="736" type="text/x-typescript" pinned="">
-    mkSec(display, 50, "A puff of wind", 455, 459, ["mcwhirr", "jukes"])
+  <script id="736" type="text/x-typescript">
+    mkSec(display, 50, "A puff of wind", 455, 459, ["macwhirr", "jukes"])
   </script>
   <script id="503" type="text/x-typescript">
     mkCell(display,455,8,
@@ -2968,10 +2935,10 @@
     `He was spared that annoyance.`,
     ``)
   </script>
-  <script id="508" type="text/x-typescript" pinned="">
+  <script id="508" type="text/x-typescript">
     typhoon.c5 = {text: `VI`, start: 460, end: 528}
     display(md`---\n### VI`)
-    mkSec(display, 51, "Fu-chau arrival", 460, 459, ["mcwhirr", "jukes"])
+    mkSec(display, 51, "Fu-chau arrival", 460, 461, [])
   </script>
   <script id="509" type="text/x-typescript">
     mkCell(display,460,3,
@@ -2982,6 +2949,9 @@
     mkCell(display,461,3,
     `She seemed, indeed, to have been used as a running target for the secondary batteries of a cruiser. A hail of minor shells could not have given her upper works **a more broken, torn, and devastated aspect**: and she had about her the worn, weary air of ships coming from the far ends of the world — and indeed with truth, for in her short passage she had been very far; sighting, verily, even the coast of the Great Beyond, whence no ship ever returns to give up her crew to the dust of the earth. She was **incrusted and gray with salt to the trucks of her masts and to the top of her funnel**; as though (as some facetious seaman said) “the crowd on board had fished her out somewhere from the bottom of the sea and brought her in here for salvage.” And further, excited by the felicity of his own wit, he offered to give five pounds for her — “as she stands.”`,
     ``)
+  </script>
+  <script id="737" type="text/x-typescript">
+    mkSec(display, 52, "Second mate complains", 462, 475, ["mate2"])
   </script>
   <script id="511" type="text/x-typescript">
     mkCell(display,462,3,
@@ -3053,6 +3023,9 @@
     `“No! Struck! You don’t say?” The man in blue began to bustle about sympathetically. “Can’t possibly talk here. I want to know all about it. Struck — eh? Let’s get a fellow to carry your chest. I know a quiet place where they have some bottled beer …”`,
     ``)
   </script>
+  <script id="738" type="text/x-typescript">
+    mkSec(display, 53, "Jukes on second mate", 476, 477, ["macwhirr", "jukes"])
+  </script>
   <script id="525" type="text/x-typescript">
     mkCell(display,476,3,
     `Mr. Jukes, who had been scanning the shore through a pair of glasses, informed the chief engineer afterwards that “our late second mate hasn’t been long in finding a friend. A chap looking uncommonly like a bummer. I saw them walk away together from the quay.”`,
@@ -3062,6 +3035,9 @@
     mkCell(display,477,3,
     `The hammering and banging of the needful repairs did not disturb Captain MacWhirr. The steward found in the letter he wrote, in a tidy chart-room, passages of such absorbing interest that twice he was nearly caught in the act. But Mrs. MacWhirr, in the drawing-room of the forty-pound house, stifled a yawn — perhaps out of self-respect — for she was alone.`,
     `0000 very neat transition from just off board the ship - back to Jukes ship's crew - then MacWhirr on board but undisturbed - to far off shore and a differently undisturbed Mrs. MacW`)
+  </script>
+  <script id="739" type="text/x-typescript">
+    mkSec(display, 54, "MacWhirr’s wife ignores letter", 478, 481, ["macwhirr"])
   </script>
   <script id="527" type="text/x-typescript">
     mkCell(display,478,2,
@@ -3083,6 +3059,9 @@
     `It did not occur to her to turn back overleaf to look. She would have found it recorded there that between 4 and 6 A. M. on December 25th, Captain MacWhirr did actually think that his ship could not possibly live another hour in such a sea, and that he would never see his wife and children again. Nobody was to know this (his letters got mislaid so quickly) — nobody whatever but the steward, who had been greatly impressed by that disclosure. So much so, that he tried to give the cook some idea of the “narrow squeak we all had” by saying solemnly, “The old man himself had a dam’ poor opinion of our chance.”`,
     `0000 another extraordinary transition here from Mrs. back to chatter on board`)
   </script>
+  <script id="740" type="text/x-typescript">
+    mkSec(display, 55, "Cook and steward are impressed", 482, 485, ["macwhirr", "deckhands"])
+  </script>
   <script id="531" type="text/x-typescript">
     mkCell(display,482,3,
     `“How do you know?” asked, contemptuously, the cook, an old soldier. “He hasn’t told you, maybe?”`,
@@ -3101,7 +3080,10 @@
   <script id="534" type="text/x-typescript">
     mkCell(display,485,3,
     `Mrs. MacWhirr glanced farther, on the alert. “… Do what’s fair … Miserable objects  … Only three, with a broken leg each, and one … Thought had better keep the matter quiet … hope to have done the fair thing …”`,
-    `0000 back to Mrs. extraordinary about of information convey here but from where and how`)
+    `0000 back to Mrs. extraordinary amoount of information convey here but from where and how`)
+  </script>
+  <script id="741" type="text/x-typescript">
+    mkSec(display, 56, "MacWhirr’s family", 486, 496, ["macwhirr"])
   </script>
   <script id="535" type="text/x-typescript">
     mkCell(display,486,3,
@@ -3158,6 +3140,9 @@
     `“Thank you very much. He’s not coming home yet. Of course it’s very sad to have him away, but it’s such a comfort to know he keeps so well.” Mrs. MacWhirr drew breath. “The climate there agrees with him,” she added, beamingly, as if poor MacWhirr had been away touring in China for the sake of his health.`,
     ``)
   </script>
+  <script id="742" type="text/x-typescript">
+    mkSec(display, 57, "Rout’s family", 497, 505, ["rout"])
+  </script>
   <script id="546" type="text/x-typescript">
     mkCell(display,497,3,
     `Neither was the chief engineer coming home yet. Mr. Rout knew too well the value of a good billet.`,
@@ -3202,6 +3187,9 @@
     mkCell(display,505,4,
     `“He always was a strong healthy boy,” said the old woman, placidly.`,
     ``)
+  </script>
+  <script id="743" type="text/x-typescript">
+    mkSec(display, 58, "Juke’s account", 506, 528, ["jukes", "workers", "macwhirr", "rout"])
   </script>
   <script id="555" type="text/x-typescript">
     mkCell(display,506,4,
