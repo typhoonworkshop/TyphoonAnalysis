@@ -125,8 +125,8 @@
     }
   </script>
   <script id="718" type="text/x-typescript" pinned="">
-    function mkSec(out: function, snum: number, _desc: string, _start: number, _end: number, _actors: []) {
-      typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors};
+    function mkSec(out: function, snum: number, _desc: string, _start: number, _end: number, _actors: [], _sentence: string) {
+      typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors, _sentence:_sentence};
       out(md`###### —s${snum}— ${_desc} ${typhoon[`s${snum}`].start}-${typhoon[`s${snum}`].end}`)
     }
   </script>
@@ -202,6 +202,7 @@
     </button>`);
 
     const tableContainer = display(html`<div></div>`);
+    const sTableContainer = display(html`<div></div>`);
 
     function formatTtr(ms: number): string {
       const totalSec = Math.round(ms / 1000);
@@ -274,8 +275,31 @@
       return entries;
     }
 
+    function buildSTable() {
+      const sEntries = [];
+      for (const [key, value] of Object.entries(typhoon)) {
+        if (!/^s/i.test(key)) continue;
+        if (!value || typeof value !== "object") continue;
+
+        const start = (value as any).start;
+        const end = (value as any).end;
+
+        sEntries.push({
+          key,
+          desc: (value as any).desc ?? null,
+          span: (start != null && end != null) ? `${start}–${end}` : null,
+          actors: Array.isArray((value as any).actors)
+            ? (value as any).actors.join(", ")
+            : null,
+          sentence: (value as any)._sentence ?? null
+        });
+      }
+      return sEntries.sort((a, b) => a.key.localeCompare(b.key, undefined, { numeric: true }));
+    }
+
     function render() {
       const entries = buildTable();
+      const sEntries = buildSTable();
       const chapterCount = entries.filter(e => e.type === "chapter").length;
       const sectionCount = entries.filter(e => e.type === "section").length;
       const paraCount    = entries.filter(e => e.type === "paragraph").length;
@@ -299,6 +323,23 @@
           bf: "bf",
           ttr: "ttr",
           preview: "preview / description"
+        }
+      }));
+
+      sTableContainer.innerHTML = "";
+      sTableContainer.append(
+        html`<p>
+          <strong>${sEntries.length} entries</strong> found with keys beginning with <code>s</code>
+        </p>`
+      );
+      sTableContainer.append(Inputs.table(sEntries, {
+        columns: ["key", "span", "desc", "actors", "sentence"],
+        header: {
+          key: "key",
+          span: "paragraphs",
+          desc: "description",
+          actors: "actors",
+          sentence: "sentence"
         }
       }));
     }
@@ -473,7 +514,7 @@
   <script id="43" type="text/x-typescript">
     typhoon.c0 = {text: "I", start: 0, end: 58}
     display(md`---\n### I`)
-    mkSec(display, 0, "MacWhirr’s Background", 0, 5, ["macwhirr"])
+    mkSec(display, 0, "MacWhirr’s Background", 0, 5, ["macwhirr"], "")
   </script>
   <script id="44" type="text/x-typescript">
     mkCell(display,0,2,
