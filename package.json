@@ -1,12 +1,10 @@
 {
   "dependencies": {
-    "@observablehq/notebook-kit": "^2.1.4"
+    "@observablehq/notebook-kit": "latest"
   },
   "scripts": {
     "preview": "notebooks preview --root nbks",
-    "build": "notebooks build --root nbks --out ../dist -- nbks/*.html"
-  },
-  "devDependencies": {
-    "esbuild": "^0.28.0"
+    "build": "notebooks build --root nbks --out ../dist -- nbks/*.html",
+    "download": "notebooks download https://observablehq.com/@shadoof/typhoon-analysis > nbks/test-notebook.html"
   }
 }
