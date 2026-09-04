@@ -1,9 +1,9 @@
 # TyphoonAnalysis
 John's analysis of Conrad's text with the intention of generating metadata
 
-This repo contains an Observable Notebook – `nbks/TyphoonAnalysisNotebook.html` – with the entire Typhoon text chopped up into paragraphs, one cell per manually editable paragraph.
+This repo tracks an Observable Notebook – [Typhoon Analysis Notebook](https://observablehq.com/@shadoof/typhoon-analysis) – with the entire Typhoon text chopped up into paragraphs, one cell per manually editable paragraph.
 
-Observable Notebooks are .html files. They can be read conveniently On MacOS computers via the downloadable [Observable Desktop](https://observablehq.com/notebook-kit/desktop) app.
+The notebook is downloaded to a local repo where it is prepared for static stite publication here. This is done using the [Observable Notebook Kit](https://observablehq.com/notebook-kit).
 
 The notebook creates and contains a JavaScript object `typhoon` with paragraph entries keyed by number strings (`"0"`, `"1"`, ...). Each paragraph will, after John's analyis, be given a `.bf` rating based on the [Beaufort Scale](https://en.wikipedia.org/wiki/Beaufort_scale) of 0-12, a `.ttr` for **time to read**, optionally a `.cm` Comment, and possibly other usable bits of metadata.
 
