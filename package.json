@@ -5,6 +5,6 @@
   "scripts": {
     "preview": "notebooks preview --root nbks",
     "build": "notebooks build --root nbks --out ../dist -- nbks/*.html",
-    "download": "notebooks download https://observablehq.com/@shadoof/typhoon-analysis > nbks/test-notebook.html"
+    "download": "notebooks download https://observablehq.com/@shadoof/typhoon-analysis > nbks/TyphoonAnalysis.html"
   }
 }
