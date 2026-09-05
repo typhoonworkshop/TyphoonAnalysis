@@ -783,7 +783,7 @@
     `The China seas north and south are narrow seas. They are seas full of every-day, eloquent facts, such as islands, sand-banks, reefs, swift and changeable currents — tangled facts that nevertheless speak to a seaman in clear and definite language. Their speech appealed to Captain MacWhirr’s sense of realities so forcibly that he had given up his state-room below and practically lived all his days on the bridge of his ship, often having his meals sent up, and sleeping at night in the chart-room. And he indited there his home letters. Each of them, without exception, contained the phrase, “The weather has been very fine this trip,” or some other form of a statement to that effect. And this statement, too, in its wonderful persistence, was of the same perfect accuracy as all the others they contained.`,
     `The “wonderful persistence” of fine weather, in MacWhirr’s exceptionally monotonous letters to his wife, is a looming irony.`)
   </script>
-  <script id="95" type="module" pinned="">
+  <script id="95" type="module">
     mkSec(display, 6, "Rout’s Letters Home", 50, 53, ["rout"])
   </script>
   <script id="97" type="module">
@@ -852,7 +852,7 @@
   <script id="110" type="module">
     mkSec(display, 9, "Jukes and McWhirr on deck", 61, 70, ["macwhirr", "jukes"])
   </script>
-  <script id="111" type="module" pinned="">
+  <script id="111" type="module">
     mkCell(display,61,2,
     `“What the devil are you doing there, Mr. Jukes?” asked Captain MacWhirr.`,
     ``)
@@ -1016,7 +1016,7 @@
     `Jukes watched the flying big stars for a moment, and then wrote: “8 P.M. Swell increasing. Ship labouring and taking water on her decks. Battened down the coolies for the night. Barometer still falling.” He paused, and thought to himself, “Perhaps nothing whatever’ll come of it.” And then he closed resolutely his entries: “Every appearance of a typhoon coming on.”`,
     ``)
   </script>
-  <script id="145" type="module" pinned="">
+  <script id="145" type="module">
     mkCell(display,92,4,
     `On going out he had to stand aside, and Captain MacWhirr strode over the doorstep without saying a word or making a sign.`,
     ``)
@@ -1172,7 +1172,7 @@
     `“Passengers?” wondered the Captain, gravely. “What passengers?”`,
     ``)
   </script>
-  <script id="178" type="module" pinned="">
+  <script id="178" type="module">
     mkCell(display,122,5,
     `“Why, the Chinamen, sir,” explained Jukes, very sick of this conversation.`,
     ``)
@@ -1461,7 +1461,7 @@
     `Before Jukes had squeezed the salt water out of his eyes all the stars had disappeared.`,
     ``)
   </script>
-  <script id="237" type="module" pinned="">
+  <script id="237" type="module">
     typhoon.c2 = {text: "III", start: 178, end: 229}
     display(md`---\n### III`)
     mkSec(display, 18, "No joke", 178, 184, ["macwhirr", "jukes"])
@@ -2428,7 +2428,7 @@
     `At last she rose slowly, staggering, **as if she had to lift a mountain with her bows**.`,
     ``)
   </script>
-  <script id="446" type="module" pinned="">
+  <script id="446" type="module">
     mkSec(display, 41, "Wave aftermath", 356, 361, ["jukes", "rout", "engineroom"])
   </script>
   <script id="447" type="module">
@@ -3026,7 +3026,7 @@
     `The second shook his fist again at the Nan-Shan. “There’s a fellow there that ain’t fit to have the command of a scow,” he declared, quivering with passion, while the other looked about listlessly.`,
     ``)
   </script>
-  <script id="571" type="module" pinned="">
+  <script id="571" type="module">
     mkCell(display,468,3,
     `“Is there?”`,
     ``)
@@ -3351,135 +3351,7 @@
   </script>
   <script id="639" type="text/markdown">
     ---
-    ### Cells added by Claude
+
     ---
-  </script>
-  <script id="640" type="module" pinned="">
-    // IIFE (Immediately Invoked Function Expression) pattern
-    const typhoonSummary = (() => {
-      // Private state
-      const title = "Typhoon by Joseph Conrad";
-      const paragraphs = typhoonArray;
-      const totalChars = typhoonGB.length;
-      const totalParas = paragraphs.length;
-
-      // Private helpers
-      function wordCount(text) {
-        return text.trim().split(/\s+/).length;
-      }
-
-      function avgWordsPerPara(paras) {
-        const total = paras.reduce((sum, p) => sum + wordCount(p), 0);
-        return Math.round(total / paras.length);
-      }
-
-      function longestParagraph(paras) {
-        return paras.reduce(
-          (longest, p) => (wordCount(p) > wordCount(longest) ? p : longest),
-          paras[0],
-        );
-      }
-
-      function shortestParagraph(paras) {
-        return paras.reduce(
-          (shortest, p) => (wordCount(p) < wordCount(shortest) ? p : shortest),
-          paras[0],
-        );
-      }
-
-      // Public API — returned object
-      return {
-        title,
-        totalCharacters: totalChars,
-        totalParagraphs: totalParas,
-        totalWords: paragraphs.reduce((sum, p) => sum + wordCount(p), 0),
-        averageWordsPerParagraph: avgWordsPerPara(paragraphs),
-        longestParagraph: {
-          preview: longestParagraph(paragraphs).slice(0, 120) + "…",
-          words: wordCount(longestParagraph(paragraphs)),
-        },
-        shortestParagraph: {
-          preview: shortestParagraph(paragraphs).slice(0, 120),
-          words: wordCount(shortestParagraph(paragraphs)),
-        },
-        getSection(n) {
-          // Returns the nth "chapter" block (Roman numeral markers)
-          const romanNumerals = ["I", "II", "III", "IV", "V", "VI"];
-          const marker = romanNumerals[n - 1];
-          const idx = paragraphs.findIndex((p) => p.trim() === marker);
-          if (idx === -1) return null;
-          const nextIdx = romanNumerals.slice(n).reduce((found, r) => {
-            if (found !== -1) return found;
-            const i = paragraphs.findIndex((p) => p.trim() === r);
-            return i > idx ? i : -1;
-          }, -1);
-          return paragraphs.slice(
-            idx + 1,
-            nextIdx === -1 ? undefined : nextIdx,
-          );
-        },
-      };
-    })();
-
-    display(typhoonSummary);
-  </script>
-  <script id="641" type="module" pinned="">
-    // Demonstrate the IIFE's public API
-    display(
-      html`<div
-        style="font-family: monospace; line-height: 1.8; padding: 1em; background: #f8f8f8; border-left: 4px solid steelblue;"
-      >
-        <h3 style="font-family: sans-serif; margin-top:0">
-          📦 IIFE — <code>typhoonSummary</code>
-        </h3>
-        <b>Title:</b> ${typhoonSummary.title}<br />
-        <b>Total characters:</b>
-        ${typhoonSummary.totalCharacters.toLocaleString()}<br />
-        <b>Total words:</b> ${typhoonSummary.totalWords.toLocaleString()}<br />
-        <b>Total paragraphs:</b> ${typhoonSummary.totalParagraphs}<br />
-        <b>Avg words / paragraph:</b>
-        ${typhoonSummary.averageWordsPerParagraph}<br />
-        <hr />
-        <b>Longest paragraph</b> (${typhoonSummary.longestParagraph.words}
-        words):<br />
-        <i style="color:#555">"${typhoonSummary.longestParagraph.preview}"</i
-        ><br />
-        <hr />
-        <b>Shortest paragraph</b> (${typhoonSummary.shortestParagraph.words}
-        word):<br />
-        <i style="color:#555">"${typhoonSummary.shortestParagraph.preview}"</i
-        ><br />
-        <hr />
-        <b>Section II paragraph count:</b> ${typhoonSummary.getSection(2)
-          .length}<br />
-        <b>Section III paragraph count:</b> ${typhoonSummary.getSection(3)
-          .length}<br />
-        <b>Section VI paragraph count:</b> ${typhoonSummary.getSection(6)
-          .length}
-      </div>`,
-    );
-  </script>
-  <script id="642" type="module" pinned="">
-    // Inspect what's available on RiTa
-    display(
-      Object.getOwnPropertyNames(RiTa).filter(
-        (k) => typeof RiTa[k] === "function",
-      ),
-    );
-  </script>
-  <script id="643" type="module" pinned="">
-    // Check for duplicate paragraph keys in typhoon
-    const allKeys = Object.keys(typhoon).filter((k) => isParagraphKey(k));
-    const nums = allKeys
-      .map((k) => paragraphNumberFromKey(k))
-      .sort((a, b) => a - b);
-    const dupes = nums.filter((n, i) => nums.indexOf(n) !== i);
-    display(`Total paragraph keys: ${allKeys.length}`);
-    display(
-      `Duplicate paragraph numbers: ${dupes.length ? dupes.join(", ") : "none"}`,
-    );
-    display(
-      `Last 10 keys in insertion order: ${allKeys.slice(-10).join(", ")}`,
-    );
   </script>
 </notebook>
