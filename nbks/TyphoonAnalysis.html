@@ -22,318 +22,6 @@
     - [Extra CSS](#extra-css)
 
   </script>
-  <script id="31" type="text/markdown">
-    ---
-    ## Notes & Visualizations &nbsp; [ꜛ](#contents)
-  </script>
-  <script id="32" type="module">
-    function extractBoldTexts (p) {
-      const para = getParagraph(typhoon, p);
-      if (!para) return `Paragraph ${p} not found.`;
-      const boldMatches = para.text.match(/\*\*(.+?)\*\*/g);
-      const boldTexts = boldMatches?.map((m) => m.replace(/\*\*/g, ""));
-      return boldTexts ? boldTexts : `No emphasized text in ${p}.`
-    }
-    display(md`The code for this note contains a sample function that extracts anything marked as bold (with two asterisks) in a paragraph.
-
-    This is because these phrases are to be given special _attention_ by the model whenever it is in a corresponding beaufort state. Two other categories of phrases are also marked for similar purposes:
-    - **bold** (double-asterisk): storm-related phraseology,
-    - *italics* (single-asterisk): phraseology relating to crew members, especially Jukes, being stunned into inaction and ethical uncertainty by the storm,
-    - ***bold italics*** (triple-asterisk): phraseology relating to the plight/treatment of the Chinese workers.
-    - __double-underscore bold__ character-related phraseology related to beaufort scale
-    - [ so far unused: _single_ and ___triple___ underscore ]`)
-  </script>
-  <script id="33" type="module" pinned="">
-    typhoon
-  </script>
-  <script id="34" type="module">
-    // Button to trigger recalculation
-    const recalcBtn = display(html`<button style="margin-bottom: 0.75em; padding: 0.4em 1em; cursor: pointer;">
-      🔄 Recalculate table
-    </button>`);
-
-    const tableContainer = display(html`<div></div>`);
-    const sTableContainer = display(html`<div></div>`);
-
-    function formatTtr(ms) {
-      const totalSec = Math.round(ms / 1000);
-      const mins = Math.floor(totalSec / 60);
-      const secs = totalSec % 60;
-      return `${mins}:${String(secs).padStart(2, "0")}`;
-    }
-
-    function isSectionKey(key) {
-      return /^s\d+$/.test(key);
-    }
-
-    function isChapterKey(key) {
-      return /^c\d+$/.test(key);
-    }
-
-    function buildTable() {
-      const entries = [];
-      for (const [key, value] of Object.entries(typhoon)) {
-        if (!value || typeof value !== "object") continue;
-
-        let type;
-        if (isChapterKey(key)) {
-          type = "chapter";
-        } else if (isSectionKey(key)) {
-          type = "section";
-        } else if (isParagraphKey(key)) {
-          type = "paragraph";
-        } else {
-          type = "other";
-        }
-
-        let wordCount = null;
-        let ttrFmt = null;
-        let preview = "";
-        let desc = null;
-        let span = null;
-
-        if (type === "paragraph") {
-          const text = value.text ?? "";
-          wordCount = text.trim().split(/\s+/).length;
-          typhoon[key].ttr = paragraphReadTimes(text).totalMs;
-          ttrFmt = formatTtr(typhoon[key].ttr);
-          preview = text.slice(0, 80).replace(/\*\*/g, "") + (text.length > 80 ? "…" : "");
-        } else if (type === "chapter") {
-          const text = value.text ?? "";
-          preview = text.slice(0, 80);
-          const start = value.start;
-          const end = value.end;
-          if (start != null && end != null) span = `${start}–${end}`;
-        } else if (type === "section") {
-          desc = value.desc ?? null;
-          const start = value.start;
-          const end = value.end;
-          if (start != null && end != null) span = `${start}–${end}`;
-          preview = desc ?? "";
-        }
-
-        entries.push({
-          key,
-          type,
-          wordCount,
-          bf: value.bf ?? null,
-          ttr: ttrFmt,
-          span,
-          desc,
-          preview
-        });
-      }
-      return entries;
-    }
-
-    function buildSTable() {
-      const sEntries = [];
-      for (const [key, value] of Object.entries(typhoon)) {
-        if (!/^s/i.test(key)) continue;
-        if (!value || typeof value !== "object") continue;
-
-        const start = value.start;
-        const end = value.end;
-
-        sEntries.push({
-          key,
-          desc: value.desc ?? null,
-          span: (start != null && end != null) ? `${start}–${end}` : null,
-          actors: Array.isArray(value.actors)
-            ? value.actors.join(", ")
-            : null,
-          sentence: value._sentence ?? null
-        });
-      }
-      return sEntries.sort((a, b) => a.key.localeCompare(b.key, undefined, { numeric: true }));
-    }
-
-    function render() {
-      const entries = buildTable();
-      const sEntries = buildSTable();
-      const chapterCount = entries.filter(e => e.type === "chapter").length;
-      const sectionCount = entries.filter(e => e.type === "section").length;
-      const paraCount    = entries.filter(e => e.type === "paragraph").length;
-
-      tableContainer.innerHTML = "";
-      tableContainer.append(
-        html`<p>
-          <strong>${entries.length} entries</strong> found in <code>typhoon</code>:
-          <strong>${chapterCount}</strong> chapters,
-          <strong>${sectionCount}</strong> sections,
-          <strong>${paraCount}</strong> paragraphs
-        </p>`
-      );
-      tableContainer.append(Inputs.table(entries, {
-        columns: ["key", "type", "span", "wordCount", "bf", "ttr", "preview"],
-        header: {
-          key: "key",
-          type: "type",
-          span: "paragraphs",
-          wordCount: "words",
-          bf: "bf",
-          ttr: "ttr",
-          preview: "preview / description"
-        }
-      }));
-
-      sTableContainer.innerHTML = "";
-      sTableContainer.append(
-        html`<p>
-          <strong>${sEntries.length} entries</strong> found <code>s</code>-prefixed keys for sections
-        </p>`
-      );
-      sTableContainer.append(Inputs.table(sEntries, {
-        columns: ["key", "span", "desc", "actors", "sentence"],
-        header: {
-          key: "key",
-          span: "paragraphs",
-          desc: "description",
-          actors: "actors",
-          sentence: "sentence"
-        }
-      }));
-    }
-
-    recalcBtn.addEventListener("click", render);
-    render();
-  </script>
-  <script id="35" type="module">
-    // xy chart — redraws when recalcBtn is clicked
-    const xyChart = (() => {
-      const container = display(html`<div></div>`);
-
-      function buildData() {
-        // Collect only paragraph entries (not chapters)
-        const entries = [];
-        for (const { key, value } of paragraphEntries(typhoon)) {
-          const ttr = value.ttr ?? paragraphReadTimes(value.text).totalMs;
-          entries.push({ key, ttr, bf: value.bf ?? null });
-        }
-        return entries;
-      }
-
-      function buildSectionStartMarkers(paragraphStartXByNumber) {
-        const markers = [];
-        for (const [key, value] of Object.entries(typhoon)) {
-          if (!/^s/.test(key) || !value || typeof value !== "object") continue;
-          const start = Number(value.start);
-          if (!Number.isFinite(start)) continue;
-          const x = paragraphStartXByNumber.get(start);
-          if (x === undefined) continue;
-          markers.push({ key, start, x });
-        }
-        return markers.sort((a, b) => a.start - b.start);
-      }
-
-      function draw() {
-        const data = buildData();
-
-        // Cumulative x: running total of ttr across all paragraphs
-        let cumulative = 0;
-        const paragraphStartXByNumber = new Map();
-        const allPoints = [];
-        for (const d of data) {
-          paragraphStartXByNumber.set(paragraphNumberFromKey(d.key), cumulative);
-          cumulative += d.ttr;
-          allPoints.push({ x: cumulative, bf: d.bf, key: d.key });
-        }
-
-        // Only plot the line up to the last paragraph with a bf value
-        const bfPoints = allPoints.filter(d => d.bf !== null);
-        const sectionStartMarkers = buildSectionStartMarkers(paragraphStartXByNumber);
-
-        const totalMs = cumulative;
-
-        // Format x-axis ticks as mm:ss
-        function fmtMs(ms) {
-          const s = Math.round(ms / 1000);
-          const m = Math.floor(s / 60);
-          const sec = s % 60;
-          return `${m}:${String(sec).padStart(2, "0")}`;
-        }
-
-        const plot = Plot.plot({
-          title: "‘Beaufort Scale’ along Time to Read",
-          subtitle: `bf score per paragraph · x-axis spans full text (${fmtMs(totalMs)} estimated reading time)`,
-          width: 900,
-          height: 320,
-          marginLeft: 50,
-          marginBottom: 50,
-          x: {
-            label: "Cumulative reading time (mm:ss) →",
-            domain: [0, totalMs],
-            tickFormat: (d) => fmtMs(d),
-            ticks: 10
-          },
-          y: {
-            label: "↑ bf",
-            domain: [0, 12],
-            grid: true
-          },
-          marks: [
-            // Full x-axis extent shown via a faint rule at y=0
-            Plot.ruleY([0], { stroke: "#ccc" }),
-            // Vertical markers for each section start paragraph (keys beginning with "s")
-            Plot.ruleX(sectionStartMarkers, {
-              x: "x",
-              stroke: "#999",
-              strokeOpacity: 0.45,
-              strokeDasharray: "2,3",
-              strokeWidth: 1
-            }),
-            // Label each section marker using its section key (s<num>)
-            Plot.text(sectionStartMarkers, {
-              x: "x",
-              y: (_d, i) => 11.6 - (i % 3) * 0.45,
-              text: "key",
-              textAnchor: "start",
-              dx: 2,
-              fill: "#666",
-              fontSize: 10
-            }),
-            // The bf line, only up to where bf values exist
-            Plot.line(bfPoints, {
-              x: "x",
-              y: "bf",
-              stroke: "steelblue",
-              strokeWidth: 1,
-              curve: "monotone-x"
-            }),
-            // Dots at each bf point
-            Plot.dot(bfPoints, {
-              x: "x",
-              y: "bf",
-              fill: "steelblue",
-              r: 1.5,
-              tip: true,
-              title: (d) => `${d.key}  bf: ${d.bf}\n${fmtMs(d.x)}`
-            }),
-            // Vertical marker showing where bf annotations end
-            Plot.ruleX([bfPoints.at(-1)?.x ?? 0], {
-              stroke: "#e07",
-              strokeDasharray: "4,3",
-              strokeWidth: 1
-            })
-          ]
-        });
-
-        container.innerHTML = "";
-        container.append(plot);
-      }
-
-      // Initial draw
-      draw();
-
-      // Redraw when recalcBtn is clicked
-      recalcBtn.addEventListener("click", () => {
-        // Small delay so the table cell's ttr values are written first
-        setTimeout(draw, 50);
-      });
-
-      return { draw, container };
-    })();
-  </script>
   <script id="37" type="text/markdown">
     ---
 
@@ -3180,6 +2868,317 @@
     ***THE END***
 
     ---
+  </script>
+  <script id="31" type="text/markdown">
+    ---
+    ## Notes & Visualizations &nbsp; [ꜛ](#contents)
+  </script>
+  <script id="9843" type="module" pinned="">
+    function extractBoldTexts (p) {
+      const para = getParagraph(typhoon, p);
+      if (!para) return `Paragraph ${p} not found.`;
+      const boldMatches = para.text.match(/\*\*(.+?)\*\*/g);
+      const boldTexts = boldMatches?.map((m) => m.replace(/\*\*/g, ""));
+      return boldTexts ? boldTexts : `No emphasized text in ${p}.`
+    }
+    display(md`The code for this note contains a sample function that extracts anything marked as bold (with two asterisks) in a paragraph.
+
+    This is because these phrases are to be given special _attention_ by the model whenever it is in a corresponding beaufort state. Two other categories of phrases are also marked for similar purposes:
+    - **bold** (double-asterisk): storm-related phraseology,
+    - *italics* (single-asterisk): phraseology relating to crew members, especially Jukes, being stunned into inaction and ethical uncertainty by the storm,
+    - ***bold italics*** (triple-asterisk): phraseology relating to the plight/treatment of the Chinese workers.
+    - __double-underscore bold__ character-related phraseology related to beaufort scale
+    - [ so far unused: _single_ and ___triple___ underscore ]`)
+  </script>
+  <script id="9844" type="module" pinned="">
+    typhoon
+  </script>
+  <script id="9842" type="module" pinned="">
+    // Button to trigger recalculation
+    const recalcBtn = display(html`<button style="margin-bottom: 0.75em; padding: 0.4em 1em; cursor: pointer;">
+      🔄 Recalculate table
+    </button>`);
+
+    const tableContainer = display(html`<div></div>`);
+    const sTableContainer = display(html`<div></div>`);
+
+    function formatTtr(ms) {
+      const totalSec = Math.round(ms / 1000);
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      return `${mins}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function isSectionKey(key) {
+      return /^s\d+$/.test(key);
+    }
+
+    function isChapterKey(key) {
+      return /^c\d+$/.test(key);
+    }
+
+    function buildTable() {
+      const entries = [];
+      for (const [key, value] of Object.entries(typhoon)) {
+        if (!value || typeof value !== "object") continue;
+
+        let type;
+        if (isChapterKey(key)) {
+          type = "chapter";
+        } else if (isSectionKey(key)) {
+          type = "section";
+        } else if (isParagraphKey(key)) {
+          type = "paragraph";
+        } else {
+          type = "other";
+        }
+
+        let wordCount = null;
+        let ttrFmt = null;
+        let preview = "";
+        let desc = null;
+        let span = null;
+
+        if (type === "paragraph") {
+          const text = value.text ?? "";
+          wordCount = text.trim().split(/\s+/).length;
+          typhoon[key].ttr = paragraphReadTimes(text).totalMs;
+          ttrFmt = formatTtr(typhoon[key].ttr);
+          preview = text.slice(0, 80).replace(/\*\*/g, "") + (text.length > 80 ? "…" : "");
+        } else if (type === "chapter") {
+          const text = value.text ?? "";
+          preview = text.slice(0, 80);
+          const start = value.start;
+          const end = value.end;
+          if (start != null && end != null) span = `${start}–${end}`;
+        } else if (type === "section") {
+          desc = value.desc ?? null;
+          const start = value.start;
+          const end = value.end;
+          if (start != null && end != null) span = `${start}–${end}`;
+          preview = desc ?? "";
+        }
+
+        entries.push({
+          key,
+          type,
+          wordCount,
+          bf: value.bf ?? null,
+          ttr: ttrFmt,
+          span,
+          desc,
+          preview
+        });
+      }
+      return entries;
+    }
+
+    function buildSTable() {
+      const sEntries = [];
+      for (const [key, value] of Object.entries(typhoon)) {
+        if (!/^s/i.test(key)) continue;
+        if (!value || typeof value !== "object") continue;
+
+        const start = value.start;
+        const end = value.end;
+
+        sEntries.push({
+          key,
+          desc: value.desc ?? null,
+          span: (start != null && end != null) ? `${start}–${end}` : null,
+          actors: Array.isArray(value.actors)
+            ? value.actors.join(", ")
+            : null,
+          sentence: value._sentence ?? null
+        });
+      }
+      return sEntries.sort((a, b) => a.key.localeCompare(b.key, undefined, { numeric: true }));
+    }
+
+    function render() {
+      const entries = buildTable();
+      const sEntries = buildSTable();
+      const chapterCount = entries.filter(e => e.type === "chapter").length;
+      const sectionCount = entries.filter(e => e.type === "section").length;
+      const paraCount    = entries.filter(e => e.type === "paragraph").length;
+
+      tableContainer.innerHTML = "";
+      tableContainer.append(
+        html`<p>
+          <strong>${entries.length} entries</strong> found in <code>typhoon</code>:
+          <strong>${chapterCount}</strong> chapters,
+          <strong>${sectionCount}</strong> sections,
+          <strong>${paraCount}</strong> paragraphs
+        </p>`
+      );
+      tableContainer.append(Inputs.table(entries, {
+        columns: ["key", "type", "span", "wordCount", "bf", "ttr", "preview"],
+        header: {
+          key: "key",
+          type: "type",
+          span: "paragraphs",
+          wordCount: "words",
+          bf: "bf",
+          ttr: "ttr",
+          preview: "preview / description"
+        }
+      }));
+
+      sTableContainer.innerHTML = "";
+      sTableContainer.append(
+        html`<p>
+          <strong>${sEntries.length} entries</strong> found <code>s</code>-prefixed keys for sections
+        </p>`
+      );
+      sTableContainer.append(Inputs.table(sEntries, {
+        columns: ["key", "span", "desc", "actors", "sentence"],
+        header: {
+          key: "key",
+          span: "paragraphs",
+          desc: "description",
+          actors: "actors",
+          sentence: "sentence"
+        }
+      }));
+    }
+
+    recalcBtn.addEventListener("click", render);
+    render();
+
+    // xy chart — redraws when recalcBtn is clicked
+    const xyChart = (() => {
+      const container = display(html`<div></div>`);
+
+      function buildData() {
+        // Collect only paragraph entries (not chapters)
+        const entries = [];
+        for (const { key, value } of paragraphEntries(typhoon)) {
+          const ttr = value.ttr ?? paragraphReadTimes(value.text).totalMs;
+          entries.push({ key, ttr, bf: value.bf ?? null });
+        }
+        return entries;
+      }
+
+      function buildSectionStartMarkers(paragraphStartXByNumber) {
+        const markers = [];
+        for (const [key, value] of Object.entries(typhoon)) {
+          if (!/^s/.test(key) || !value || typeof value !== "object") continue;
+          const start = Number(value.start);
+          if (!Number.isFinite(start)) continue;
+          const x = paragraphStartXByNumber.get(start);
+          if (x === undefined) continue;
+          markers.push({ key, start, x });
+        }
+        return markers.sort((a, b) => a.start - b.start);
+      }
+
+      function draw() {
+        const data = buildData();
+
+        // Cumulative x: running total of ttr across all paragraphs
+        let cumulative = 0;
+        const paragraphStartXByNumber = new Map();
+        const allPoints = [];
+        for (const d of data) {
+          paragraphStartXByNumber.set(paragraphNumberFromKey(d.key), cumulative);
+          cumulative += d.ttr;
+          allPoints.push({ x: cumulative, bf: d.bf, key: d.key });
+        }
+
+        // Only plot the line up to the last paragraph with a bf value
+        const bfPoints = allPoints.filter(d => d.bf !== null);
+        const sectionStartMarkers = buildSectionStartMarkers(paragraphStartXByNumber);
+
+        const totalMs = cumulative;
+
+        // Format x-axis ticks as mm:ss
+        function fmtMs(ms) {
+          const s = Math.round(ms / 1000);
+          const m = Math.floor(s / 60);
+          const sec = s % 60;
+          return `${m}:${String(sec).padStart(2, "0")}`;
+        }
+
+        const plot = Plot.plot({
+          title: "‘Beaufort Scale’ along Time to Read",
+          subtitle: `bf score per paragraph · x-axis spans full text (${fmtMs(totalMs)} estimated reading time)`,
+          width: 900,
+          height: 320,
+          marginLeft: 50,
+          marginBottom: 50,
+          x: {
+            label: "Cumulative reading time (mm:ss) →",
+            domain: [0, totalMs],
+            tickFormat: (d) => fmtMs(d),
+            ticks: 10
+          },
+          y: {
+            label: "↑ bf",
+            domain: [0, 12],
+            grid: true
+          },
+          marks: [
+            // Full x-axis extent shown via a faint rule at y=0
+            Plot.ruleY([0], { stroke: "#ccc" }),
+            // Vertical markers for each section start paragraph (keys beginning with "s")
+            Plot.ruleX(sectionStartMarkers, {
+              x: "x",
+              stroke: "#999",
+              strokeOpacity: 0.45,
+              strokeDasharray: "2,3",
+              strokeWidth: 1
+            }),
+            // Label each section marker using its section key (s<num>)
+            Plot.text(sectionStartMarkers, {
+              x: "x",
+              y: (_d, i) => 11.6 - (i % 3) * 0.45,
+              text: "key",
+              textAnchor: "start",
+              dx: 2,
+              fill: "#666",
+              fontSize: 10
+            }),
+            // The bf line, only up to where bf values exist
+            Plot.line(bfPoints, {
+              x: "x",
+              y: "bf",
+              stroke: "steelblue",
+              strokeWidth: 1,
+              curve: "monotone-x"
+            }),
+            // Dots at each bf point
+            Plot.dot(bfPoints, {
+              x: "x",
+              y: "bf",
+              fill: "steelblue",
+              r: 1.5,
+              tip: true,
+              title: (d) => `${d.key}  bf: ${d.bf}\n${fmtMs(d.x)}`
+            }),
+            // Vertical marker showing where bf annotations end
+            Plot.ruleX([bfPoints.at(-1)?.x ?? 0], {
+              stroke: "#e07",
+              strokeDasharray: "4,3",
+              strokeWidth: 1
+            })
+          ]
+        });
+
+        container.innerHTML = "";
+        container.append(plot);
+      }
+
+      // Initial draw
+      draw();
+
+      // Redraw when recalcBtn is clicked
+      recalcBtn.addEventListener("click", () => {
+        // Small delay so the table cell's ttr values are written first
+        setTimeout(draw, 50);
+      });
+
+      return { draw, container };
+    })();
   </script>
   <script id="1954" type="text/markdown">
     ---
