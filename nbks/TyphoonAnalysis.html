@@ -10,174 +10,21 @@
     _I first read_ Typhoon _in a North American edition belonging to my paternal grandmother’s father, one that was probably based on a North American serialization. The digital text that we use here is from Project Gutenberg and is based on an original English book edition. When going through the text for this analysis I have used the_ Oxford World's Classics _Kindle edition, chiefly to confirm paragraph breaks and also for chapter divisions._
 
     ## Contents
-    - [Utilities](#utilities)
+    - [Typhoon](#typhoon)
+      - [I](#i)
+      - [II](#ii)
+      - [III](#iii)
+      - [IV](#iv)
+      - [V](#v)
+      - [VI](#vi)
     - [Notes & Visualizations](#notes-and-visualizations)
-  </script>
-  <script id="19" type="text/markdown">
-    ---
-    ## Utilities
-  </script>
-  <script id="20" type="module" pinned="">
-    const typhoonGB = await FileAttachment("typhoonGB.txt").text();
-    display(md`Loaded \`typhoonGB.txt\`: ${typhoonGB.length.toLocaleString()} characters. \`const typhoonGB\` contains the text.`);
-  </script>
-  <script id="21" type="module" pinned="">
-    const typhoon = {};
-    const actors = {macwhirr: {}, jukes: {}, rout: {}, mate2: {}, boatswain: {}, helmsman: {}, workers: {}, deckhands: {}, owners: {}, engineroom: {}}
-    const focalization = {} // mainly one diegesis-knowing narrator, but comes from the world of the officers and crew, not from the world of the workers (has a story-teller's knowledge of thoughts; hears and sees almost everything in the officers and crew world not the world of the workers): officers and crew; theoretical maritime knowledge; actual weather; workers' world; bridge; engineroom; deck; tweendeck; hold
-  </script>
-  <script id="22" type="module" pinned="">
-    // Paragraph key migration helpers: canonical form is now the numeric string ("0", "1", ...).
-    const paragraphKey = (pnum) => String(pnum).replace(/^p/, "");
+    - [Utilities](#utilities)
+    - [Extra CSS](#extra-css)
 
-    function isParagraphKey(key) {
-      return /^\d+$/.test(key) || /^p\d+$/.test(key);
-    }
-
-    function paragraphNumberFromKey(key) {
-      return parseInt(key.replace(/^p/, ""), 10);
-    }
-
-    function paragraphEntries(source) {
-      const byNumber = new Map();
-      for (const [key, value] of Object.entries(source)) {
-        if (!isParagraphKey(key)) continue;
-        const n = paragraphNumberFromKey(key);
-        const existing = byNumber.get(n);
-        // Prefer canonical unprefixed keys when both formats exist.
-        if (!existing || /^\d+$/.test(key)) byNumber.set(n, { key, value });
-      }
-      return [...byNumber.entries()]
-        .sort((a, b) => a[0] - b[0])
-        .map(([, entry]) => entry);
-    }
-
-    function getParagraph(source, ref) {
-      const canonical = paragraphKey(ref);
-      return source[canonical] ?? source[`p${canonical}`];
-    }
-  </script>
-  <script id="23" type="module">
-    const typhoonArray = (() => {
-      const arr = []
-      const tarr = typhoonGB.split("\n\n")
-      for (let i = 0; i < tarr.length; i++) {
-        if (tarr[i]) arr.push(tarr[i])
-      }
-      return arr
-    })()
-
-    display(typhoonArray)
-  </script>
-  <script id="24" type="module" pinned="">
-    import { RiTa } from "npm:rita";
-    const { syllables, isPunct, tokenize } = RiTa;
-  </script>
-  <script id="26" type="module" pinned="">
-    const PUNCT_PAUSE_MS = 700;
-    const VOWEL_WEIGHT = 1.5;
-    const TIME_FACTOR = 20; // reading five times faster that normal (bf curve unchanged)
-
-    function normalize(token) {
-      token = token.trim();
-      // Remove any hyphen that is NOT the last character of the token
-      token = token.replace(/-(?!$)/g, "");
-      return token
-        .replace(/\*\*\*/g, "")
-        .replace(/\*\*/g, "")
-        .replace(/\*/g,"")
-        // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
-        .replace(/[\u201C\u201D\u2018\u2019]/g, "");
-    }
-
-    function timeToRead(rawToken, lengthOfWhiteSpace = 1, factor = TIME_FACTOR) {
-      const token = normalize(rawToken);
-      const base = 33;
-      let ttr = base;
-      // add up to 3 extra base units for each unit of token length up to length 4
-      ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
-      const syls = syllables(token).split("/");
-      const vowels = token.match(/[aeiouy]/gi);
-      const punc = tokenize(token).filter(t => isPunct(t));
-      ttr += syls.length * (base * 2);
-      if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
-      if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
-      ttr += lengthOfWhiteSpace * (base * 2);
-      ttr = Math.round(ttr / factor);
-      return ttr;
-    }
-    // the number of millis in one minute is 6000; 45 mins: 270,000
-  </script>
-  <script id="27" type="module" pinned="">
-    function paragraphReadTimes(text) {
-      const words = text.trim().split(/\s+/);
-      const wordTimes = [];
-      for (let i = 0; i < words.length; i++) {
-        wordTimes.push(timeToRead(words[i]));
-      }
-      const totalMs = wordTimes.reduce((sum, t) => sum + t, 0);
-      return { totalMs, wordTimes };
-    }
-  </script>
-  <script id="28" type="module" pinned="">
-    function mkCell(out, pnum, beaufort, txt, commentary) {
-      typhoon[paragraphKey(pnum)] = {text:txt,bf:beaufort,cm:commentary}
-      out(md`##### ${pnum}<a id="p${pnum}"></a>`)
-      out(md`###### bf${beaufort}`)
-      out(md`${txt}`)
-      if (commentary) out(md`> *${commentary}*`)
-    }
-  </script>
-  <script id="29" type="module" pinned="">
-    function mkSec(out, snum, _desc, _start, _end, _actors, _sentence) {
-      typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors, _sentence:_sentence};
-      out(md`###### —s${snum}— ${_desc} ${typhoon[`s${snum}`].start}-${typhoon[`s${snum}`].end}`)
-    }
-  </script>
-  <script id="30" type="module" pinned="">
-    function goCell(pnum) {
-      const jumpToParagraph = (num) => {
-        const n = Number(num);
-        if (!Number.isInteger(n) || n < 1) return;
-        const id = "p" + n;
-        const target = document.getElementById(id);
-        if (!target) {
-          alert("Paragraph " + n + " not found.");
-          return;
-        }
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      };
-
-      const installShortcut = () => {
-        if (window.__goCellShortcutInstalled) return;
-        window.__goCellShortcutInstalled = true;
-
-        window.addEventListener("keydown", (event) => {
-          if (event.metaKey && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "j") {
-            event.preventDefault();
-            const input = prompt("Go to paragraph number:");
-            if (input === null) return;
-            jumpToParagraph(input.trim());
-          }
-        });
-      };
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", installShortcut, { once: true });
-      } else {
-        installShortcut();
-      }
-
-      if (pnum !== undefined && pnum !== null && pnum !== "") {
-        jumpToParagraph(pnum);
-      }
-    }
-
-    goCell();
   </script>
   <script id="31" type="text/markdown">
     ---
-    ## Notes & Visualizations
+    ## Notes & Visualizations &nbsp; [ꜛ](#contents)
   </script>
   <script id="32" type="module">
     function extractBoldTexts (p) {
@@ -487,37 +334,14 @@
       return { draw, container };
     })();
   </script>
-  <script id="36" type="text/html">
-    <hr />
-    <b>Extra CSS is in this cell</b>
-    <hr />
-    <style>
-      h5,
-      h6 {
-        text-align: right;
-        margin: 0;
-        font-weight: normal;
-        font-family: ui-monospace, "Source Code Pro", monospace;
-      }
-      h5 {
-        font-weight: bold;
-      }
-      blockquote {
-        font-size: 90%;
-      }
-      .para {
-        margin-bottom: 1em;
-      }
-    </style>
-  </script>
   <script id="37" type="text/markdown">
     ---
 
-    ## Analysis
+    ## _Typhoon_
   </script>
   <script id="38" type="module">
     typhoon.c0 = {text: "I", start: 0, end: 58}
-    display(md`---\n### I`)
+    display(md`---\n### I &nbsp; [ꜛ](#contents)`)
     mkSec(display, 0, "MacWhirr’s Background", 0, 5, ["macwhirr", "jukes"], "Captain McWhirr’s appearance, character, and background is sketched out, with a vignette that gives a glimpse of Jukes’ deference and supportive inclination.")
   </script>
   <script id="39" type="module">
@@ -838,7 +662,7 @@
   </script>
   <script id="107" type="module">
     typhoon.c1 = {text: "II", start: 59, end: 177}
-    display(md`---\n### II`)
+    display(md`---\n### II &nbsp; [ꜛ](#contents)`)
     mkSec(display, 8, "Fall of the Barometer", 59, 60, ["macwhirr"])
   </script>
   <script id="108" type="module">
@@ -1465,7 +1289,7 @@
   </script>
   <script id="237" type="module">
     typhoon.c2 = {text: "III", start: 178, end: 229}
-    display(md`---\n### III`)
+    display(md`---\n### III &nbsp; [ꜛ](#contents)`)
     mkSec(display, 18, "No joke", 178, 184, ["macwhirr", "jukes"])
   </script>
   <script id="238" type="module">
@@ -1745,7 +1569,7 @@
   </script>
   <script id="296" type="module">
     typhoon.c3 = {text: `IV`, start: 230, end: 343}
-    display(md`---\n### IV`)
+    display(md`---\n### IV &nbsp; [ꜛ](#contents)`)
   </script>
   <script id="297" type="module">
     mkCell(display,230,9,
@@ -2367,7 +2191,7 @@
   </script>
   <script id="432" type="module">
     typhoon.c4 = {text: `V`, start: 344, end: 459}
-    display(md`---\n### V`)
+    display(md`---\n### V &nbsp; [ꜛ](#contents)`)
     mkSec(display, 40, "Great wave", 344, 355, ["macwhirr", "jukes", "rout", "engineroom"])
   </script>
   <script id="433" type="module">
@@ -2982,7 +2806,7 @@
   </script>
   <script id="561" type="module">
     typhoon.c5 = {text: `VI`, start: 460, end: 528}
-    display(md`---\n### VI`)
+    display(md`---\n### VI &nbsp; [ꜛ](#contents)`)
     mkSec(display, 51, "Fu-chau arrival", 460, 461, [])
   </script>
   <script id="562" type="module">
@@ -3353,7 +3177,195 @@
   </script>
   <script id="639" type="text/markdown">
     ---
+    ***THE END***
 
     ---
+  </script>
+  <script id="1954" type="text/markdown">
+    ---
+    ## Utilities &nbsp; [ꜛ](#contents)
+  </script>
+  <script id="1955" type="module" pinned="">
+    const typhoonGB = await FileAttachment("typhoonGB.txt").text();
+    display(md`Loaded \`typhoonGB.txt\`: ${typhoonGB.length.toLocaleString()} characters. \`const typhoonGB\` contains the text.`);
+  </script>
+  <script id="1956" type="module" pinned="">
+    const typhoon = {};
+    const actors = {macwhirr: {}, jukes: {}, rout: {}, mate2: {}, boatswain: {}, helmsman: {}, workers: {}, deckhands: {}, owners: {}, engineroom: {}}
+    const focalization = {} // mainly one diegesis-knowing narrator, but comes from the world of the officers and crew, not from the world of the workers (has a story-teller's knowledge of thoughts; hears and sees almost everything in the officers and crew world not the world of the workers): officers and crew; theoretical maritime knowledge; actual weather; workers' world; bridge; engineroom; deck; tweendeck; hold
+  </script>
+  <script id="1957" type="module" pinned="">
+    // Paragraph key migration helpers: canonical form is now the numeric string ("0", "1", ...).
+    const paragraphKey = (pnum) => String(pnum).replace(/^p/, "");
+
+    function isParagraphKey(key) {
+      return /^\d+$/.test(key) || /^p\d+$/.test(key);
+    }
+
+    function paragraphNumberFromKey(key) {
+      return parseInt(key.replace(/^p/, ""), 10);
+    }
+
+    function paragraphEntries(source) {
+      const byNumber = new Map();
+      for (const [key, value] of Object.entries(source)) {
+        if (!isParagraphKey(key)) continue;
+        const n = paragraphNumberFromKey(key);
+        const existing = byNumber.get(n);
+        // Prefer canonical unprefixed keys when both formats exist.
+        if (!existing || /^\d+$/.test(key)) byNumber.set(n, { key, value });
+      }
+      return [...byNumber.entries()]
+        .sort((a, b) => a[0] - b[0])
+        .map(([, entry]) => entry);
+    }
+
+    function getParagraph(source, ref) {
+      const canonical = paragraphKey(ref);
+      return source[canonical] ?? source[`p${canonical}`];
+    }
+  </script>
+  <script id="1958" type="module">
+    const typhoonArray = (() => {
+      const arr = []
+      const tarr = typhoonGB.split("\n\n")
+      for (let i = 0; i < tarr.length; i++) {
+        if (tarr[i]) arr.push(tarr[i])
+      }
+      return arr
+    })()
+
+    display(typhoonArray)
+  </script>
+  <script id="1959" type="module" pinned="">
+    import { RiTa } from "npm:rita";
+    const { syllables, isPunct, tokenize } = RiTa;
+  </script>
+  <script id="1960" type="module" pinned="">
+    const PUNCT_PAUSE_MS = 700;
+    const VOWEL_WEIGHT = 1.5;
+    const TIME_FACTOR = 20; // reading five times faster that normal (bf curve unchanged)
+
+    function normalize(token) {
+      token = token.trim();
+      // Remove any hyphen that is NOT the last character of the token
+      token = token.replace(/-(?!$)/g, "");
+      return token
+        .replace(/\*\*\*/g, "")
+        .replace(/\*\*/g, "")
+        .replace(/\*/g,"")
+        // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
+        .replace(/[\u201C\u201D\u2018\u2019]/g, "");
+    }
+
+    function timeToRead(rawToken, lengthOfWhiteSpace = 1, factor = TIME_FACTOR) {
+      const token = normalize(rawToken);
+      const base = 33;
+      let ttr = base;
+      // add up to 3 extra base units for each unit of token length up to length 4
+      ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
+      const syls = syllables(token).split("/");
+      const vowels = token.match(/[aeiouy]/gi);
+      const punc = tokenize(token).filter(t => isPunct(t));
+      ttr += syls.length * (base * 2);
+      if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
+      if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
+      ttr += lengthOfWhiteSpace * (base * 2);
+      ttr = Math.round(ttr / factor);
+      return ttr;
+    }
+    // the number of millis in one minute is 6000; 45 mins: 270,000
+  </script>
+  <script id="1961" type="module" pinned="">
+    function paragraphReadTimes(text) {
+      const words = text.trim().split(/\s+/);
+      const wordTimes = [];
+      for (let i = 0; i < words.length; i++) {
+        wordTimes.push(timeToRead(words[i]));
+      }
+      const totalMs = wordTimes.reduce((sum, t) => sum + t, 0);
+      return { totalMs, wordTimes };
+    }
+  </script>
+  <script id="1962" type="module" pinned="">
+    function mkCell(out, pnum, beaufort, txt, commentary) {
+      typhoon[paragraphKey(pnum)] = {text:txt,bf:beaufort,cm:commentary}
+      out(md`##### ${pnum}<a id="p${pnum}"></a>`)
+      out(md`###### bf${beaufort}`)
+      out(md`${txt}`)
+      if (commentary) out(md`> *${commentary}*`)
+    }
+  </script>
+  <script id="1963" type="module" pinned="">
+    function mkSec(out, snum, _desc, _start, _end, _actors, _sentence) {
+      typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors, _sentence:_sentence};
+      out(md`###### —s${snum}— ${_desc} ${typhoon[`s${snum}`].start}-${typhoon[`s${snum}`].end}`)
+    }
+  </script>
+  <script id="1964" type="module" pinned="">
+    function goCell(pnum) {
+      const jumpToParagraph = (num) => {
+        const n = Number(num);
+        if (!Number.isInteger(n) || n < 1) return;
+        const id = "p" + n;
+        const target = document.getElementById(id);
+        if (!target) {
+          alert("Paragraph " + n + " not found.");
+          return;
+        }
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      const installShortcut = () => {
+        if (window.__goCellShortcutInstalled) return;
+        window.__goCellShortcutInstalled = true;
+
+        window.addEventListener("keydown", (event) => {
+          if (event.metaKey && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "j") {
+            event.preventDefault();
+            const input = prompt("Go to paragraph number:");
+            if (input === null) return;
+            jumpToParagraph(input.trim());
+          }
+        });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", installShortcut, { once: true });
+      } else {
+        installShortcut();
+      }
+
+      if (pnum !== undefined && pnum !== null && pnum !== "") {
+        jumpToParagraph(pnum);
+      }
+    }
+
+    goCell();
+  </script>
+  <script id="1965" type="text/markdown">
+    ---
+    ### Extra CSS &nbsp; [ꜛ](#contents)
+  </script>
+  <script id="36" type="text/html">
+    <p><i>[ In this cell ]</i></p>
+    <style>
+      h5,
+      h6 {
+        text-align: right;
+        margin: 0;
+        font-weight: normal;
+        font-family: ui-monospace, "Source Code Pro", monospace;
+      }
+      h5 {
+        font-weight: bold;
+      }
+      blockquote {
+        font-size: 90%;
+      }
+      .para {
+        margin-bottom: 1em;
+      }
+    </style>
   </script>
 </notebook>
