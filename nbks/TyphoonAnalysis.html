@@ -4,31 +4,35 @@
   <script id="16" type="text/markdown">
     # Typhoon Analysis
   </script>
-  <script id="18" type="text/markdown">
-    #### _Note on the text_
+  <script id="18" type="module">
+    const c1 = sections.slice(0, 8).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
+    const c2 = sections.slice(8, 18).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
+    const c3 = sections.slice(18, 24).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
+    const c4 = sections.slice(24, 40).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
+    const c5 = sections.slice(40, 51).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
+    const c6 = sections.slice(51, 59).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
+    display(md`#### _Note on the text_
 
     _I first read_ Typhoon _in a North American edition belonging to my paternal grandmother’s father, one that was probably based on a North American serialization. The digital text that we use here is from Project Gutenberg and is based on an original English book edition. When going through the text for this analysis I have used the_ Oxford World's Classics _Kindle edition, chiefly to confirm paragraph breaks and also for chapter divisions._
 
     ## Contents
     - [TYPHOON](#typhoon)
-      - [I](#i)
-        1. [${typhoon.s0.desc}](#s0)
-        2. [${typhoon.s1.desc}](#s1)
-        3. [${typhoon.s2.desc}](#s2)
-        4. [${typhoon.s3.desc}](#s3)
-        5. [${typhoon.s4.desc}](#s4)
-        6. [${typhoon.s5.desc}](#s5)
-        7. [${typhoon.s6.desc}](#s6)
-        8. [${typhoon.s7.desc}](#s7)
-      - [II](#ii)
-      - [III](#iii)
-      - [IV](#iv)
-      - [V](#v)
-      - [VI](#vi)
+      - **[I](#i)**
+    ${c1}
+      - **[II](#ii)**
+    ${c2}
+      - **[III](#iii)**
+    ${c3}
+      - **[IV](#iv)**
+    ${c4}
+      - **[V](#v)**
+    ${c5}
+      - **[VI](#vi)**
+    ${c6}
+    - [Synopsis](#synopsis)
     - [Notes & Visualizations](#notes-and-visualizations)
     - [Utilities](#utilities)
-    - [Extra CSS](#extra-css)
-
+    - [Extra CSS](#extra-css)`)
   </script>
   <script id="37" type="text/markdown">
     ---
@@ -149,7 +153,7 @@
     ``)
   </script>
   <script id="62" type="module">
-    mkSec(display, 2, "Flag Controversy", 21, 33, ["macwhirr", "jukes", "rout"], "The ship is to be transfered to the Siamese flag, rather than remaining British registered and Jukes’ finds this distasteful, expressing his feelings inarticulately and coming into unspoke conflict with his captain, MacWhirr, over this issue.")
+    mkSec(display, 2, "Flag Controversy", 21, 33, ["macwhirr", "jukes", "rout"], "The ship is to be transfered to the Siamese flag, rather than remaining British registered and Jukes’ finds this distasteful, expressing his feelings inarticulately and coming into unspoken conflict with his captain, MacWhirr, over this issue.")
   </script>
   <script id="63" type="module">
     mkCell(display,21,2,
@@ -283,7 +287,7 @@
     `The ascription of “gentle and refined melancholy” to the Bun Hin* (萬興) *company’s clerk argues for the narrative’s distinct structure of prejudice, relative to that of certain characters’ with it.`)
   </script>
   <script id="90" type="module">
-    mkSec(display, 5, "McWhirr’s Letters Home", 46, 49, ["macwhirr"], "MacWhirr writes one of his habitual letters to his wife and we readers have the opportunity to be acquainted with these letters’ straightforward dullness and to catch some glimpses of the domestic, quiet suburban, context into which the letters are delivered.")
+    mkSec(display, 5, "MacWhirr’s Letters Home", 46, 49, ["macwhirr"], "MacWhirr writes one of his habitual letters to his wife and we readers have the opportunity to be acquainted with these letters’ straightforward dullness and to catch some glimpses of the domestic, quiet suburban, context into which the letters are delivered.")
   </script>
   <script id="91" type="module">
     mkCell(display,46,2,
@@ -372,7 +376,7 @@
     ``)
   </script>
   <script id="110" type="module">
-    mkSec(display, 9, "Jukes and McWhirr on deck", 61, 70, ["macwhirr", "jukes"])
+    mkSec(display, 9, "Jukes and MacWhirr on Deck", 61, 70, ["macwhirr", "jukes"])
   </script>
   <script id="111" type="module">
     mkCell(display,61,2,
@@ -453,7 +457,7 @@
     ``)
   </script>
   <script id="127" type="module">
-    mkSec(display, 11, "Jukes and MacWhirr: differences", 76, 85, ["macwhirr", "jukes"])
+    mkSec(display, 11, "Jukes and MacWhirr: Differences", 76, 85, ["macwhirr", "jukes"])
   </script>
   <script id="128" type="module">
     mkCell(display,76,3,
@@ -506,7 +510,7 @@
     ``)
   </script>
   <script id="138" type="module">
-    mkSec(display, 12, "Inklings of the storm", 86, 93, ["workers", "jukes"])
+    mkSec(display, 12, "Inklings of the Storm", 86, 93, ["workers", "jukes"])
   </script>
   <script id="139" type="module">
     mkCell(display,86,3,
@@ -549,7 +553,7 @@
     ``)
   </script>
   <script id="147" type="module">
-    mkSec(display, 13, "Second Mate refusals", 94, 112, ["jukes", "mate2"])
+    mkSec(display, 13, "The Second Mate Refusals", 94, 112, ["jukes", "mate2"])
   </script>
   <script id="148" type="module">
     mkCell(display,94,3,
@@ -647,7 +651,7 @@
     `The exchange between Jukes and the second mate here presages the worse than nothing that the second mate becomes both during the storm and after.`)
   </script>
   <script id="168" type="module">
-    mkSec(display, 14, "Jukes and McWhirr: what’s coming for whom", 113, 134, ["macwhirr", "jukes", "workers"])
+    mkSec(display, 14, "Jukes and McWhirr: What’s Coming for Whom", 113, 134, ["macwhirr", "jukes", "workers"])
   </script>
   <script id="169" type="module">
     mkCell(display,113,5,
@@ -760,7 +764,7 @@
     ``)
   </script>
   <script id="191" type="module">
-    mkSec(display, 15, "Against (not by) the book", 135, 147, ["macwhirr", "jukes"])
+    mkSec(display, 15, "Against (not by) the Book", 135, 147, ["macwhirr", "jukes"])
   </script>
   <script id="192" type="module">
     mkCell(display,135,4,
@@ -828,7 +832,7 @@
     ``)
   </script>
   <script id="205" type="module">
-    mkSec(display, 16, "Gale becomes gale", 148, 161, ["macwhirr", "jukes"])
+    mkSec(display, 16, "Gale Becomes Gale", 148, 161, ["macwhirr", "jukes"])
   </script>
   <script id="206" type="module">
     mkCell(display,148,4,
@@ -901,7 +905,7 @@
     ``)
   </script>
   <script id="220" type="module">
-    mkSec(display, 17, "The stars disappear", 162, 177, ["macwhirr", "jukes"])
+    mkSec(display, 17, "The Stars Disappear", 162, 177, ["macwhirr", "jukes"])
   </script>
   <script id="221" type="module">
     mkCell(display,162,9,
@@ -986,7 +990,7 @@
   <script id="237" type="module">
     typhoon.c2 = {text: "III", start: 178, end: 229}
     display(md`---\n### III &nbsp; [ꜛ](#contents)`)
-    mkSec(display, 18, "No joke", 178, 184, ["macwhirr", "jukes"])
+    mkSec(display, 18, "No Joke", 178, 184, ["macwhirr", "jukes"])
   </script>
   <script id="238" type="module">
     mkCell(display,178,9,
@@ -1024,7 +1028,7 @@
     ``)
   </script>
   <script id="245" type="module">
-    mkSec(display, 19, "Precariously alone", 185, 186, ["jukes"])
+    mkSec(display, 19, "Precariously Alone", 185, 186, ["jukes"])
   </script>
   <script id="246" type="module">
     mkCell(display,185,11,
@@ -1037,7 +1041,7 @@
     ``)
   </script>
   <script id="248" type="module">
-    mkSec(display, 20, "Somehow mixed up", 187, 204, ["macwhirr", "jukes"])
+    mkSec(display, 20, "Somehow Mixed Up", 187, 204, ["macwhirr", "jukes"])
   </script>
   <script id="249" type="module">
     mkCell(display,187,11,
@@ -1130,7 +1134,7 @@
     `The “strange effect” is the “quietness” of language, of MacWhirr’s voice, “like the serene glow of a halo.” …`)
   </script>
   <script id="268" type="module">
-    mkSec(display, 21, "Where are the hands?", 205, 212, ["macwhirr", "jukes"])
+    mkSec(display, 21, "Where are the Hands?", 205, 212, ["macwhirr", "jukes"])
   </script>
   <script id="269" type="module">
     mkCell(display,205,10,
@@ -1173,7 +1177,7 @@
     ``)
   </script>
   <script id="277" type="module">
-    mkSec(display, 22, "Will she live through this?", 213, 220, ["macwhirr", "jukes"])
+    mkSec(display, 22, "Will She Live through This?", 213, 220, ["macwhirr", "jukes"])
   </script>
   <script id="278" type="module">
     mkCell(display,213,11,
@@ -1216,7 +1220,7 @@
     ``)
   </script>
   <script id="286" type="module">
-    mkSec(display, 23, "Boatswain and report", 221, 231, ["macwhirr", "jukes", "boatswain", "workers"])
+    mkSec(display, 23, "The Boatswain and his Report", 221, 231, ["macwhirr", "jukes", "boatswain", "workers"])
   </script>
   <script id="287" type="module">
     mkCell(display,221,10,
@@ -1278,7 +1282,7 @@
     ``)
   </script>
   <script id="299" type="module">
-    mkSec(display, 24, "Jukes stunned", 232, 235, ["jukes"])
+    mkSec(display, 24, "Jukes Stunned", 232, 235, ["jukes"])
   </script>
   <script id="300" type="module">
     mkCell(display,232,9,
@@ -1301,7 +1305,7 @@
     ``)
   </script>
   <script id="304" type="module">
-    mkSec(display, 25, "Jukes’ order", 236, 243, ["macwhirr", "jukes"])
+    mkSec(display, 25, "Jukes’ Order", 236, 243, ["macwhirr", "jukes"])
   </script>
   <script id="305" type="module">
     mkCell(display,236,9,
@@ -1344,7 +1348,7 @@
     ``)
   </script>
   <script id="313" type="module">
-    mkSec(display, 26, "Boatswain and deckhands", 244, 249, ["boatswain", "deckhands"])
+    mkSec(display, 26, "The Boatswain and the Deckhands", 244, 249, ["boatswain", "deckhands"])
   </script>
   <script id="314" type="module">
     mkCell(display,244,10,
@@ -1377,7 +1381,7 @@
     ``)
   </script>
   <script id="320" type="module">
-    mkSec(display, 27, "Boatswain and tweendeck", 250, 257, ["boatswain", "workers"])
+    mkSec(display, 27, "The Boatswain in the Tweendecks", 250, 257, ["boatswain", "workers"])
   </script>
   <script id="325" type="module">
     mkCell(display,250,9,
@@ -1420,7 +1424,7 @@
     ``)
   </script>
   <script id="333" type="module">
-    mkSec(display, 28, "Boatswain goes to bridge", 258, 262, ["boatswain", "deckhands", "mate2"])
+    mkSec(display, 28, "The Boatswain Climbs to the Bridge", 258, 262, ["boatswain", "deckhands", "mate2"])
   </script>
   <script id="334" type="module">
     mkCell(display,258,9,
@@ -1448,7 +1452,7 @@
     ``)
   </script>
   <script id="339" type="module">
-    mkSec(display, 29, "Must see, Jukes ordered", 263, 276, ["boatswain", "macwhirr", "jukes"])
+    mkSec(display, 29, "Must See, Jukes is Ordered", 263, 276, ["boatswain", "macwhirr", "jukes"])
   </script>
   <script id="340" type="module">
     mkCell(display,263,9,
@@ -1521,7 +1525,7 @@
     ``)
   </script>
   <script id="354" type="module">
-    mkSec(display, 30, "Jukes’ departure", 277, 279, ["boatswain", "macwhirr", "jukes"])
+    mkSec(display, 30, "Jukes’ Departure", 277, 279, ["boatswain", "macwhirr", "jukes"])
   </script>
   <script id="355" type="module">
     mkCell(display,277,10,
@@ -1539,7 +1543,7 @@
     ``)
   </script>
   <script id="358" type="module">
-    mkSec(display, 31, "Jukes with boatswain and deckhands", 280, 282, ["jukes", "boatswain", "deckhands"])
+    mkSec(display, 31, "Jukes with the Boatswain and Deckhands", 280, 282, ["jukes", "boatswain", "deckhands"])
   </script>
   <script id="359" type="module">
     mkCell(display,280,9,
@@ -1557,7 +1561,7 @@
     ``)
   </script>
   <script id="362" type="module">
-    mkSec(display, 32, "Jukes in the tweendeck", 283, 289, ["jukes", "boatswain", "workers"])
+    mkSec(display, 32, "Jukes in the Tweendecks", 283, 289, ["jukes", "boatswain", "workers"])
   </script>
   <script id="363" type="module">
     mkCell(display,283,9,
@@ -1595,7 +1599,7 @@
     ``)
   </script>
   <script id="370" type="module">
-    mkSec(display, 33, "MacWhirr alone on bridge", 290, 292, ["macwhirr"])
+    mkSec(display, 33, "MacWhirr Alone on the Bridge", 290, 292, ["macwhirr"])
   </script>
   <script id="371" type="module">
     mkCell(display,290,9,
@@ -1613,7 +1617,7 @@
     ``)
   </script>
   <script id="375" type="module">
-    mkSec(display, 34, "MacWhirr and second mate", 293, 299, ["macwhirr", "mate2"])
+    mkSec(display, 34, "MacWhirr and the Second Mate", 293, 299, ["macwhirr", "mate2"])
   </script>
   <script id="376" type="module">
     mkCell(display,293,9,
@@ -1651,7 +1655,7 @@
     ``)
   </script>
   <script id="383" type="module">
-    mkSec(display, 35, "MacWhirr and helmsman", 300, 305, ["macwhirr", "helmsman"])
+    mkSec(display, 35, "MacWhirr and the Helmsman", 300, 305, ["macwhirr", "helmsman"])
   </script>
   <script id="384" type="module">
     mkCell(display,300,9,
@@ -1777,7 +1781,7 @@
     ``)
   </script>
   <script id="409" type="module">
-    mkSec(display, 37, "Rout and Engineroom", 324, 329, ["rout", "engineroom"])
+    mkSec(display, 37, "Rout in the Engineroom", 324, 329, ["rout", "engineroom"])
   </script>
   <script id="410" type="module">
     mkCell(display,324,10,
@@ -1863,7 +1867,7 @@
     ``)
   </script>
   <script id="427" type="module">
-    mkSec(display, 39, "Jukes reports engineroom to bridge", 340, 343, ["macwhirr", "jukes", "workers"])
+    mkSec(display, 39, "Jukes Reports from Engineroom to Bridge", 340, 343, ["macwhirr", "jukes", "workers"])
   </script>
   <script id="428" type="module">
     mkCell(display,340,11,
@@ -1888,7 +1892,7 @@
   <script id="432" type="module">
     typhoon.c4 = {text: `V`, start: 344, end: 459}
     display(md`---\n### V &nbsp; [ꜛ](#contents)`)
-    mkSec(display, 40, "Great wave", 344, 355, ["macwhirr", "jukes", "rout", "engineroom"])
+    mkSec(display, 40, "The Great Wave", 344, 355, ["macwhirr", "jukes", "rout", "engineroom"])
   </script>
   <script id="433" type="module">
     mkCell(display,344,11,
@@ -1951,7 +1955,7 @@
     ``)
   </script>
   <script id="446" type="module">
-    mkSec(display, 41, "Wave aftermath", 356, 361, ["jukes", "rout", "engineroom"])
+    mkSec(display, 41, "The Wave’s Aftermath", 356, 361, ["jukes", "rout", "engineroom"])
   </script>
   <script id="447" type="module">
     mkCell(display,356,12,
@@ -1984,7 +1988,7 @@
     ``)
   </script>
   <script id="453" type="module">
-    mkSec(display, 42, "Order: pick up the dollars", 362, 369, ["jukes", "macwhirr", "rout", "engineroom"])
+    mkSec(display, 42, "Order: Pick up the Dollars", 362, 369, ["jukes", "macwhirr", "rout", "engineroom"])
   </script>
   <script id="454" type="module">
     mkCell(display,362,12,
@@ -2027,7 +2031,7 @@
     ``)
   </script>
   <script id="462" type="module">
-    mkSec(display, 43, "Picking up the dollars", 370, 382, ["jukes", "boatswain", "deckhands", "workers"])
+    mkSec(display, 43, "Picking up the Dollars", 370, 382, ["jukes", "boatswain", "deckhands", "workers"])
   </script>
   <script id="463" type="module">
     mkCell(display,370,12,
@@ -2075,7 +2079,7 @@
     ``)
   </script>
   <script id="472" type="module">
-    mkSec(display, 44, "The Chinese workers lament", 383, 386, ["jukes","workers"])
+    mkSec(display, 44, "The Chinese Workers’ Lament", 383, 386, ["jukes","workers"])
   </script>
   <script id="473" type="module">
     mkCell(display,379,11,
@@ -2118,7 +2122,7 @@
     ``)
   </script>
   <script id="481" type="module">
-    mkSec(display, 45, "Alleyway and deck", 387, 388, ["jukes", "deckhands"])
+    mkSec(display, 45, "In the Alleyway and on Deck", 387, 388, ["jukes", "deckhands"])
   </script>
   <script id="482" type="module">
     mkCell(display,387,4,
@@ -2131,7 +2135,7 @@
     ``)
   </script>
   <script id="484" type="module">
-    mkSec(display, 46, "There was no wind", 389, 407, ["macwhirr", "jukes", "workers"])
+    mkSec(display, 46, "There was No Wind", 389, 407, ["macwhirr", "jukes", "workers"])
   </script>
   <script id="485" type="module">
     mkCell(display,389,0,
@@ -2229,7 +2233,7 @@
     ``)
   </script>
   <script id="505" type="module">
-    mkSec(display, 47, "Still core", 408, 408, ["jukes"])
+    mkSec(display, 47, "The Still Core", 408, 408, ["jukes"])
   </script>
   <script id="506" type="module">
     mkCell(display,408,2,
@@ -2237,7 +2241,7 @@
     ``)
   </script>
   <script id="507" type="module">
-    mkSec(display, 48, "It will be terrific", 409, 422, ["macwhirr"])
+    mkSec(display, 48, "It will be Terrific", 409, 422, ["macwhirr"])
   </script>
   <script id="508" type="module">
     mkCell(display,409,2,
@@ -2310,7 +2314,7 @@
     ``)
   </script>
   <script id="522" type="module">
-    mkSec(display, 49, "Preparations on deck", 423, 454, ["macwhirr", "jukes", "mate2", "helsman"])
+    mkSec(display, 49, "Preparations on Deck", 423, 454, ["macwhirr", "jukes", "mate2", "helsman"])
   </script>
   <script id="523" type="module">
     mkCell(display,423,2,
@@ -2473,7 +2477,7 @@
     ``)
   </script>
   <script id="555" type="module">
-    mkSec(display, 50, "A puff of wind", 455, 459, ["macwhirr", "jukes"])
+    mkSec(display, 50, "A Puff of Wind", 455, 459, ["macwhirr", "jukes"])
   </script>
   <script id="556" type="module">
     mkCell(display,455,8,
@@ -2503,7 +2507,7 @@
   <script id="561" type="module">
     typhoon.c5 = {text: `VI`, start: 460, end: 528}
     display(md`---\n### VI &nbsp; [ꜛ](#contents)`)
-    mkSec(display, 51, "Fu-chau arrival", 460, 461, [])
+    mkSec(display, 51, "Arrival at Fu-chau", 460, 461, [])
   </script>
   <script id="562" type="module">
     mkCell(display,460,3,
@@ -2516,7 +2520,7 @@
     ``)
   </script>
   <script id="564" type="module">
-    mkSec(display, 52, "Second mate complains", 462, 475, ["mate2"])
+    mkSec(display, 52, "The Second Mate’s Complaint", 462, 475, ["mate2"])
   </script>
   <script id="565" type="module">
     mkCell(display,462,3,
@@ -2589,7 +2593,7 @@
     ``)
   </script>
   <script id="579" type="module">
-    mkSec(display, 53, "Jukes on second mate", 476, 477, ["macwhirr", "jukes"])
+    mkSec(display, 53, "Jukes on the Second Mate", 476, 477, ["macwhirr", "jukes"])
   </script>
   <script id="580" type="module">
     mkCell(display,476,3,
@@ -2602,7 +2606,7 @@
     `0000 very neat transition from just off board the ship - back to Jukes ship's crew - then MacWhirr on board but undisturbed - to far off shore and a differently undisturbed Mrs. MacW`)
   </script>
   <script id="583" type="module">
-    mkSec(display, 54, "MacWhirr’s wife ignores letter", 478, 481, ["macwhirr"])
+    mkSec(display, 54, "MacWhirr’s Wife Ignores his Letter", 478, 481, ["macwhirr"])
   </script>
   <script id="584" type="module">
     mkCell(display,478,2,
@@ -2625,7 +2629,7 @@
     `0000 another extraordinary transition here from Mrs. back to chatter on board`)
   </script>
   <script id="588" type="module">
-    mkSec(display, 55, "Cook and steward are impressed", 482, 485, ["macwhirr", "deckhands"])
+    mkSec(display, 55, "The Cook and Steward are Impressed", 482, 485, ["macwhirr", "deckhands"])
   </script>
   <script id="589" type="module">
     mkCell(display,482,3,
@@ -2648,7 +2652,7 @@
     `0000 back to Mrs. extraordinary amoount of information convey here but from where and how`)
   </script>
   <script id="593" type="module">
-    mkSec(display, 56, "MacWhirr’s family", 486, 496, ["macwhirr"])
+    mkSec(display, 56, "MacWhirr’s Family", 486, 496, ["macwhirr"])
   </script>
   <script id="594" type="module">
     mkCell(display,486,3,
@@ -2706,7 +2710,7 @@
     ``)
   </script>
   <script id="605" type="module">
-    mkSec(display, 57, "Rout’s family", 497, 505, ["rout"])
+    mkSec(display, 57, "Rout’s Family", 497, 505, ["rout"])
   </script>
   <script id="606" type="module">
     mkCell(display,497,3,
@@ -2754,7 +2758,7 @@
     ``)
   </script>
   <script id="615" type="module">
-    mkSec(display, 58, "Juke's account", 506, 528, ["jukes", "workers", "macwhirr", "rout"])
+    mkSec(display, 58, "Juke's Account", 506, 528, ["jukes", "workers", "macwhirr", "rout"])
   </script>
   <script id="616" type="module">
     mkCell(display,506,4,
@@ -2885,7 +2889,7 @@
     let synopsis = "";
     for (let sindex = 0; sindex < sections.length; sindex++) {
       if (sections[sindex] && sections[sindex]._sentence) {
-        synopsis += sections[sindex]._sentence + " <span style='color:red'>§</span> ";
+        synopsis += "<span style='color:red'>§</span>&nbsp;" + sections[sindex]._sentence;
       }
     }
     display(md`${synopsis}`)
@@ -2976,7 +2980,7 @@
           const end = value.end;
           if (start != null && end != null) span = `${start}–${end}`;
           preview = desc ?? "";
-          sections.push(value);
+          sections.push({ ...value, id: key });
         }
 
         entries.push({
@@ -2990,6 +2994,8 @@
           preview
         });
       }
+      // sort section objects by their id property
+      sections.sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1)));
       return entries;
     }
 
