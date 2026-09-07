@@ -15,8 +15,8 @@
     const c4 = sections.slice(24, 40).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
     const c5 = sections.slice(40, 51).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
     const c6 = sections.slice(51, 59).map((s, i) => `    ${i + 1}. [${s.desc}](#${s.id})`).join("\r");
-    display(md`## Contents
-    - [TYPHOON](#typhoon)
+    display(md`## Contents<br><br>
+    [TYPHOON](#typhoon)
       - **[I](#i)**
     ${c1}
       - **[II](#ii)**
