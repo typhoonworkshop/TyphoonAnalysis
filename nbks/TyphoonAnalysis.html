@@ -10,8 +10,16 @@
     _I first read_ Typhoon _in a North American edition belonging to my paternal grandmother’s father, one that was probably based on a North American serialization. The digital text that we use here is from Project Gutenberg and is based on an original English book edition. When going through the text for this analysis I have used the_ Oxford World's Classics _Kindle edition, chiefly to confirm paragraph breaks and also for chapter divisions._
 
     ## Contents
-    - [Typhoon](#typhoon)
+    - [TYPHOON](#typhoon)
       - [I](#i)
+        1. [${typhoon.s0.desc}](#s0)
+        2. [${typhoon.s1.desc}](#s1)
+        3. [${typhoon.s2.desc}](#s2)
+        4. [${typhoon.s3.desc}](#s3)
+        5. [${typhoon.s4.desc}](#s4)
+        6. [${typhoon.s5.desc}](#s5)
+        7. [${typhoon.s6.desc}](#s6)
+        8. [${typhoon.s7.desc}](#s7)
       - [II](#ii)
       - [III](#iii)
       - [IV](#iv)
@@ -321,7 +329,7 @@
     ``)
   </script>
   <script id="101" type="module">
-    mkSec(display, 7, "Jukes’ letters home", 54, 58, ["jukes"])
+    mkSec(display, 7, "Jukes’ Letters home", 54, 58, ["jukes"])
   </script>
   <script id="102" type="module">
     mkCell(display,54,3,
@@ -2869,18 +2877,24 @@
 
     ---
   </script>
+  <script id="9849" type="text/markdown">
+    ---
+    ## Synopsis &nbsp; [ꜛ](#contents)
+  </script>
+  <script id="9850" type="module">
+    let synopsis = "";
+    for (let sindex = 0; sindex < sections.length; sindex++) {
+      if (sections[sindex] && sections[sindex]._sentence) {
+        synopsis += sections[sindex]._sentence + " <span style='color:red'>§</span> ";
+      }
+    }
+    display(md`${synopsis}`)
+  </script>
   <script id="31" type="text/markdown">
     ---
     ## Notes & Visualizations &nbsp; [ꜛ](#contents)
   </script>
-  <script id="9843" type="module" pinned="">
-    function extractBoldTexts (p) {
-      const para = getParagraph(typhoon, p);
-      if (!para) return `Paragraph ${p} not found.`;
-      const boldMatches = para.text.match(/\*\*(.+?)\*\*/g);
-      const boldTexts = boldMatches?.map((m) => m.replace(/\*\*/g, ""));
-      return boldTexts ? boldTexts : `No emphasized text in ${p}.`
-    }
+  <script id="9843" type="module">
     display(md`The code for this note contains a sample function that extracts anything marked as bold (with two asterisks) in a paragraph.
 
     This is because these phrases are to be given special _attention_ by the model whenever it is in a corresponding beaufort state. Two other categories of phrases are also marked for similar purposes:
@@ -2892,6 +2906,9 @@
   </script>
   <script id="9844" type="module" pinned="">
     typhoon
+  </script>
+  <script id="9847" type="module" pinned="">
+    typhoon.s1
   </script>
   <script id="9842" type="module" pinned="">
     // Button to trigger recalculation
@@ -2916,6 +2933,8 @@
     function isChapterKey(key) {
       return /^c\d+$/.test(key);
     }
+
+    const sections = [];
 
     function buildTable() {
       const entries = [];
@@ -2957,6 +2976,7 @@
           const end = value.end;
           if (start != null && end != null) span = `${start}–${end}`;
           preview = desc ?? "";
+          sections.push(value);
         }
 
         entries.push({
@@ -3188,6 +3208,20 @@
     const typhoonGB = await FileAttachment("typhoonGB.txt").text();
     display(md`Loaded \`typhoonGB.txt\`: ${typhoonGB.length.toLocaleString()} characters. \`const typhoonGB\` contains the text.`);
   </script>
+  <script id="1958" type="module">
+    const typhoonArray = (() => {
+      const arr = []
+      const tarr = typhoonGB.split("\n\n")
+      for (let i = 0; i < tarr.length; i++) {
+        if (tarr[i]) arr.push(tarr[i])
+      }
+      return arr
+    })()
+    display(typhoonArray)
+  </script>
+  <script id="9846" type="text/markdown">
+    **NOTE:** Both `typhoonGB` and `typhoonArray` are based on supply text and are independent of the string literals in the cells of the displayed text.
+  </script>
   <script id="1956" type="module" pinned="">
     const typhoon = {};
     const actors = {macwhirr: {}, jukes: {}, rout: {}, mate2: {}, boatswain: {}, helmsman: {}, workers: {}, deckhands: {}, owners: {}, engineroom: {}}
@@ -3224,81 +3258,17 @@
       return source[canonical] ?? source[`p${canonical}`];
     }
   </script>
-  <script id="1958" type="module">
-    const typhoonArray = (() => {
-      const arr = []
-      const tarr = typhoonGB.split("\n\n")
-      for (let i = 0; i < tarr.length; i++) {
-        if (tarr[i]) arr.push(tarr[i])
-      }
-      return arr
-    })()
-
-    display(typhoonArray)
-  </script>
   <script id="1959" type="module" pinned="">
     import { RiTa } from "npm:rita";
     const { syllables, isPunct, tokenize } = RiTa;
   </script>
-  <script id="1960" type="module" pinned="">
-    const PUNCT_PAUSE_MS = 700;
-    const VOWEL_WEIGHT = 1.5;
-    const TIME_FACTOR = 20; // reading five times faster that normal (bf curve unchanged)
-
-    function normalize(token) {
-      token = token.trim();
-      // Remove any hyphen that is NOT the last character of the token
-      token = token.replace(/-(?!$)/g, "");
-      return token
-        .replace(/\*\*\*/g, "")
-        .replace(/\*\*/g, "")
-        .replace(/\*/g,"")
-        // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
-        .replace(/[\u201C\u201D\u2018\u2019]/g, "");
-    }
-
-    function timeToRead(rawToken, lengthOfWhiteSpace = 1, factor = TIME_FACTOR) {
-      const token = normalize(rawToken);
-      const base = 33;
-      let ttr = base;
-      // add up to 3 extra base units for each unit of token length up to length 4
-      ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
-      const syls = syllables(token).split("/");
-      const vowels = token.match(/[aeiouy]/gi);
-      const punc = tokenize(token).filter(t => isPunct(t));
-      ttr += syls.length * (base * 2);
-      if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
-      if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
-      ttr += lengthOfWhiteSpace * (base * 2);
-      ttr = Math.round(ttr / factor);
-      return ttr;
-    }
-    // the number of millis in one minute is 6000; 45 mins: 270,000
-  </script>
-  <script id="1961" type="module" pinned="">
-    function paragraphReadTimes(text) {
-      const words = text.trim().split(/\s+/);
-      const wordTimes = [];
-      for (let i = 0; i < words.length; i++) {
-        wordTimes.push(timeToRead(words[i]));
-      }
-      const totalMs = wordTimes.reduce((sum, t) => sum + t, 0);
-      return { totalMs, wordTimes };
-    }
-  </script>
-  <script id="1962" type="module" pinned="">
-    function mkCell(out, pnum, beaufort, txt, commentary) {
-      typhoon[paragraphKey(pnum)] = {text:txt,bf:beaufort,cm:commentary}
-      out(md`##### ${pnum}<a id="p${pnum}"></a>`)
-      out(md`###### bf${beaufort}`)
-      out(md`${txt}`)
-      if (commentary) out(md`> *${commentary}*`)
-    }
-  </script>
-  <script id="1963" type="module" pinned="">
-    function mkSec(out, snum, _desc, _start, _end, _actors, _sentence) {
-      typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors, _sentence:_sentence};
-      out(md`###### —s${snum}— ${_desc} ${typhoon[`s${snum}`].start}-${typhoon[`s${snum}`].end}`)
+  <script id="9845" type="module" pinned="">
+    function extractBoldTexts (p) {
+      const para = getParagraph(typhoon, p);
+      if (!para) return `Paragraph ${p} not found.`;
+      const boldMatches = para.text.match(/\*\*(.+?)\*\*/g);
+      const boldTexts = boldMatches?.map((m) => m.replace(/\*\*/g, ""));
+      return boldTexts ? boldTexts : `No emphasized text in ${p}.`
     }
   </script>
   <script id="1964" type="module" pinned="">
@@ -3341,6 +3311,68 @@
     }
 
     goCell();
+  </script>
+  <script id="1962" type="module" pinned="">
+    function mkCell(out, pnum, beaufort, txt, commentary) {
+      typhoon[paragraphKey(pnum)] = {text:txt,bf:beaufort,cm:commentary}
+      out(md`##### ${pnum}<a id="p${pnum}"></a>`)
+      out(md`###### bf${beaufort}`)
+      out(md`${txt}`)
+      if (commentary) out(md`> *${commentary}*`)
+    }
+  </script>
+  <script id="1963" type="module" pinned="">
+    function mkSec(out, snum, _desc, _start, _end, _actors, _sentence) {
+      typhoon[`s${snum}`] = {desc:_desc, start:_start,end:_end, actors:_actors, _sentence:_sentence};
+      out(html`<h6 id="s${snum}"> —s${snum}— ${_desc} ${typhoon[`s${snum}`].start}-${typhoon[`s${snum}`].end}</h5>`)
+    }
+  </script>
+  <script id="1961" type="module" pinned="">
+    function paragraphReadTimes(text) {
+      const words = text.trim().split(/\s+/);
+      const wordTimes = [];
+      for (let i = 0; i < words.length; i++) {
+        wordTimes.push(timeToRead(words[i]));
+      }
+      const totalMs = wordTimes.reduce((sum, t) => sum + t, 0);
+      return { totalMs, wordTimes };
+    }
+  </script>
+  <script id="1960" type="module" pinned="">
+    const PUNCT_PAUSE_MS = 700;
+    const VOWEL_WEIGHT = 1.5;
+    const TIME_FACTOR = 20; // reading five times faster that normal (bf curve unchanged)
+
+    function normalize(token) {
+      token = token.trim();
+      // Remove any hyphen that is NOT the last character of the token
+      token = token.replace(/-(?!$)/g, "");
+      return token
+        .replace(/\*\*\*/g, "")
+        .replace(/\*\*/g, "")
+        .replace(/\*/g,"")
+        // use Unicode escapes to avoid editor silently converting curly quotes to straight ones
+        .replace(/[\u201C\u201D\u2018\u2019]/g, "");
+    }
+
+    function timeToRead(rawToken, lengthOfWhiteSpace = 1, factor = TIME_FACTOR) {
+      const token = normalize(rawToken);
+      const base = 33;
+      let ttr = base;
+      // add up to 3 extra base units for each unit of token length up to length 4
+      ttr += base * Math.min(Math.max(token.length - 1, 0), 3);
+      const syls = syllables(token).split("/");
+      const vowels = token.match(/[aeiouy]/gi);
+      const punc = tokenize(token).filter(t => isPunct(t));
+      ttr += syls.length * (base * 2);
+      if (vowels) ttr += (token.length > 4 ? vowels.length * (base * VOWEL_WEIGHT) : base * VOWEL_WEIGHT);
+      if (punc.length) ttr += punc.length * PUNCT_PAUSE_MS;
+      ttr += lengthOfWhiteSpace * (base * 2);
+      ttr = Math.round(ttr / factor);
+      return ttr;
+    }
+    // the number of millis in one minute is 6000; 45 mins: 270,000
+    display(md`**<code>function timeToRead and helpers</code>**`)
   </script>
   <script id="1965" type="text/markdown">
     ---
